@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class validation extends Component
+class Validation extends Component
 {
     /**
      * Create a new component instance.

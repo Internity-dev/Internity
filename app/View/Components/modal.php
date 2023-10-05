@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class modal extends Component
+class Modal extends Component
 {
     /**
      * Create a new component instance.
