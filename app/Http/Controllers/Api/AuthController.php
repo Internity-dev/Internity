@@ -117,7 +117,7 @@ class AuthController extends Controller
             return response()->json([
                 'error' => 'Unauthorized',
                 'message' => 'Password lama salah',
-            ], 401);
+            ], 422);
         } else {
             $user->update([
                 'password' => bcrypt($request->password),
