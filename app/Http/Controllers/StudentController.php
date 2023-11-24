@@ -182,6 +182,7 @@ class StudentController extends Controller
             $user->courses()->sync($request->course_id);
 
             if ($company) {
+
                 $request->validate([
                     'start_date' => 'required|date',
                     'end_date' => 'required|date',
@@ -201,19 +202,19 @@ class StudentController extends Controller
                 $endDate = Carbon::parse($request->end_date);
 
                 for ($i = $startDate; $i <= $endDate; $i->addDay()) {
-                    $presence = $user->presences()->where('company_id', $id)->where('date', $i)->first();
-                    $journal = $user->journals()->where('company_id', $id)->where('date', $i)->first();
+                    $presence = $user->presences()->where('company_id', $company)->where('date', $i)->first();
+                    $journal = $user->journals()->where('company_id', $company)->where('date', $i)->first();
 
                     if (! $presence) {
                         $user->presences()->create([
-                            'company_id' => $id,
+                            'company_id' => $company,
                             'date' => $i,
                             'presence_status_id' => $presencePending,
                         ]);
                     }
                     if (! $journal) {
                         $user->journals()->create([
-                            'company_id' => $id,
+                            'company_id' => $company,
                             'date' => $i,
                         ]);
                     }
