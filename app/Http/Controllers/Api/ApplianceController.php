@@ -59,6 +59,7 @@ class ApplianceController extends Controller
         return response()->json([
             'message' => 'Appliances retrieved successfully',
             'appliances' => $appliances,
+            'intern_date' => $internDates
         ], 200);
     }
 

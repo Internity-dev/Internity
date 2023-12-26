@@ -31,7 +31,7 @@ class Vacancy extends Model
         'pending_appliances',
         'processed_appliances',
         'in_processed',
-        'in_pending',
+        'in_pending'
     ];
 
     public function getAppliedAttribute()

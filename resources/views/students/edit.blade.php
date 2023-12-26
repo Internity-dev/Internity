@@ -1,8 +1,6 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    {{ route('students.update', ['id' => encrypt($student->id), 'company' => $company ? encrypt($company->id) : null]) }}
-
     <x-form.form formTitle="Edit Siswa" formMethod="POST" spoofMethod="PUT"
         formAction="{{ route('students.update', ['id' => encrypt($student->id), 'company' => $company ? encrypt($company->id) : null]) }}">
         @error(['name', 'course_id', 'skills', 'company', 'start_date', 'end_date', 'extend'])

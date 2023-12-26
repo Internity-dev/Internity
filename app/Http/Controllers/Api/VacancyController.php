@@ -39,6 +39,7 @@ class VacancyController extends Controller
     public function recommended()
     {
         $departmentId = auth()->user()->departments()->first()->id;
+        
         try {
             $userSkills = explode(',', auth()->user()->skills);
 
