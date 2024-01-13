@@ -4,7 +4,7 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    <x-table routeCreate="{{ route('scores.create', ['user'=>request()->query('user'), 'company'=>request()->query('company')]) }}" permissionCreate="score-create" pageName="Penilaian Magang {{ $userName }}" :pagination="$scores" :tableData="$scores">
+    <x-table routeCreate="{!! route('scores.create', ['user'=>request()->query('user'), 'company'=>request()->query('company')]) !!}" permissionCreate="score-create" pageName="Penilaian Magang {{ $userName }}" :pagination="$scores" :tableData="$scores">
 
         <x-slot:thead>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-5">
