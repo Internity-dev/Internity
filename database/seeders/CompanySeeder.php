@@ -20,7 +20,7 @@ class CompanySeeder extends Seeder
         foreach ($schools as $school) {
             $departments = Department::where('school_id', $school->id)->get();
             foreach ($departments as $department) {
-                Company::factory()->count(4)->create([
+                Company::factory()->count(1)->create([
                     'department_id' => $department->id,
                 ]);
             }

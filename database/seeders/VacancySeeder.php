@@ -18,7 +18,7 @@ class VacancySeeder extends Seeder
     {
         $companies = Company::all();
         foreach ($companies as $company) {
-            Vacancy::factory()->count(rand(2,4))->create([
+            Vacancy::factory()->count(1)->create([
                 'company_id' => $company->id,
             ]);
         }
