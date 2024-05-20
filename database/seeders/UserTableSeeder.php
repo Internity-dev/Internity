@@ -290,15 +290,15 @@ class UserTableSeeder extends Seeder
         //             ]);
         //         }
 
-                Review::create([
-                    'user_id' => $user->id,
-                    'reviewable_id' => $company->id,
-                    'reviewable_type' => 'App\Models\Company',
-                    'rating' => rand(1, 5),
-                    'title' => 'Cocok untuk berkembang',
-                    'body' => 'Perusahaan ini sangat bagus untuk pengembangan skill, pembimbing peduli dengan siswa magang, dan lingkungan kerja yang nyaman.',
-                ]);
-            };
+        //         Review::create([
+        //             'user_id' => $user->id,
+        //             'reviewable_id' => $company->id,
+        //             'reviewable_type' => 'App\Models\Company',
+        //             'rating' => rand(1, 5),
+        //             'title' => 'Cocok untuk berkembang',
+        //             'body' => 'Perusahaan ini sangat bagus untuk pengembangan skill, pembimbing peduli dengan siswa magang, dan lingkungan kerja yang nyaman.',
+        //         ]);
+        //     });
 
         //     User::factory()->count(2)->create()->each(function ($user) use ($course) {
         //         $user->assignRole('teacher');
