@@ -23,24 +23,24 @@ class Appliance extends Model
             if ($appliance->status == 'accepted') {
                 $notif = Notification::create([
                     'user_id' => $appliance->user_id,
-                    'title' => 'Lamaran Magang Kamu Diterima!',
-                    'body' => 'Selamat! Lamaran magang kamu untuk lowongan ' . $appliance->vacancy->name . ' di ' . $appliance->vacancy->company->name . ' telah diterima. Silakan hubungi perusahaan untuk lebih lanjut.',
+                    'title' => 'Lamaran PKL Kamu Diterima!',
+                    'body' => 'Selamat! Lamaran PKL kamu untuk lowongan ' . $appliance->vacancy->name . ' di ' . $appliance->vacancy->company->name . ' telah diterima. Silakan hubungi perusahaan untuk lebih lanjut.',
                 ]);
 
                 FCMService::send($appliance->user->fcm_token, [$notif->title, $notif->body]);
             } elseif ($appliance->status == 'rejected') {
                 $notif = Notification::create([
                     'user_id' => $appliance->user_id,
-                    'title' => 'Yahh, lamaran magang kamu ditolak.',
-                    'body' => 'Maaf, lamaran magang kamu untuk lowongan ' . $appliance->vacancy->name . ' di ' . $appliance->vacancy->company->name . ' telah ditolak. Jangan menyerah, coba lagi untuk lowongan lainnya!',
+                    'title' => 'Yahh, lamaran PKL kamu ditolak.',
+                    'body' => 'Maaf, lamaran PKL kamu untuk lowongan ' . $appliance->vacancy->name . ' di ' . $appliance->vacancy->company->name . ' telah ditolak. Jangan menyerah, coba lagi untuk lowongan lainnya!',
                 ]);
 
                 FCMService::send($appliance->user->fcm_token, [$notif->title, $notif->body]);
             } elseif ($appliance->status == 'processed') {
                 $notif = Notification::create([
                     'user_id' => $appliance->user_id,
-                    'title' => 'Lamaran Magang Kamu Sedang Diproses',
-                    'body' => 'Lamaran magang kamu untuk lowongan ' . $appliance->vacancy->name . ' di ' . $appliance->vacancy->company->name . ' sedang diproses oleh pihak sekolah. Harap sabar menunggu kabar selanjutnya.',
+                    'title' => 'Lamaran PKL Kamu Sedang Diproses',
+                    'body' => 'Lamaran PKL kamu untuk lowongan ' . $appliance->vacancy->name . ' di ' . $appliance->vacancy->company->name . ' sedang diproses oleh pihak sekolah. Harap sabar menunggu kabar selanjutnya.',
                 ]);
 
                 FCMService::send($appliance->user->fcm_token, [$notif->title, $notif->body]);

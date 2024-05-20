@@ -31,7 +31,8 @@ class Vacancy extends Model
         'pending_appliances',
         'processed_appliances',
         'in_processed',
-        'in_pending'
+        'in_pending',
+        'is_saved'
     ];
 
     public function getAppliedAttribute()
@@ -47,6 +48,11 @@ class Vacancy extends Model
     public function getInPendingAttribute()
     {
         return $this->appliances()->where('status', 'pending')->where('user_id', auth()->id())->count() > 0 ? true : false;
+    }
+
+    public function getIsSavedAttribute()
+    {
+        return $this->savedvacancies()->where('user_id', auth()->id())->count() > 0 ? true : false;
     }
 
     public function getPendingAppliancesAttribute()
@@ -91,6 +97,11 @@ class Vacancy extends Model
     public function appliances()
     {
         return $this->hasMany(Appliance::class);
+    }
+
+    public function savedvacancies()
+    {
+        return $this->hasMany(SavedVacancy::class);
     }
 
     public function scopeCompany($query, $company)

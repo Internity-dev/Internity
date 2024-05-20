@@ -40,7 +40,7 @@ class EndDateReminder extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Pengingat Kepulangan Magang dari ' . $this->company->name,
+            subject: 'Pengingat Kepulangan PKL dari ' . $this->company->name,
         );
     }
 

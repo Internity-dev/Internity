@@ -5,7 +5,7 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    <x-table pageName="Data Magang Siswa" routeCreate="{{ route('users.create') }}" :pagination="$students" :tableData="$students">
+    <x-table pageName="Data PKL Siswa" routeCreate="{{ route('users.create') }}" :pagination="$students" :tableData="$students">
 
         <x-slot:thead>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15">
@@ -157,7 +157,7 @@
                             <td class="text-sm text-center">
                                 <span
                                     class="badge badge-sm bg-gradient-{{ $student->internDates()->where('company_id', $company->id)->first()?->finished? 'success': 'warning' }}">
-                                    {{ $student->internDates()->where('company_id', $company->id)->first()?->finished? 'Selesai': 'Magang' }}
+                                    {{ $student->internDates()->where('company_id', $company->id)->first()?->finished? 'Selesai': 'PKL' }}
                                 </span>
                             </td>
                         </tr>

@@ -10,7 +10,7 @@
                     <h1>Welcome to Internity!</h1>
                     <p>
                         Kontrol dan pantau kegiatan
-                        <span>Magang</span> dengan mudah.
+                        <span>PKL</span> dengan mudah.
                     </p>
                 </div>
 

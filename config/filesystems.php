@@ -55,6 +55,14 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+        
+        'resources' => [
+            'driver' => 'local',
+            'root' => public_path('resources'),
+            'url' => env('APP_URL').'/resources',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
 
     ],
 

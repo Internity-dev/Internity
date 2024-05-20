@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\PresenceController;
 use App\Http\Controllers\Api\ApplianceController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PresenceStatusController;
+use App\Http\Controllers\Api\SavedVacancyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/vacancies', [VacancyController::class, 'index']);
     Route::get('/vacancies/recommended', [VacancyController::class, 'recommended']);
     Route::get('/vacancies/{id}', [VacancyController::class, 'show']);
+    Route::get('/search/{searchbar}', [VacancyController::class, 'search']);
 
     Route::resource('appliances', ApplianceController::class)->only([
         'index', 'store', 'destroy'
@@ -52,6 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/appliances/accepted', [ApplianceController::class, 'accepted']);
     Route::put('/appliances/{id}/cancel', [ApplianceController::class, 'cancel']);
     Route::put('/appliances/{id}/edit-date', [ApplianceController::class, 'editDate']);
+
+    Route::resource('savedvacancies', SavedVacancyController::class)->only([
+        'index', 'store', 'destroy'
+    ]);
 
     Route::resource('journals', JournalController::class)->except(['create', 'edit']);
 

@@ -56,7 +56,7 @@
                             <input class="form-check-input" type="radio" value="0" id="input-status-1"
                                 name="finished"
                                 {{ $student->internDates()->where('company_id', $company->id)->first()?->finished == 0? 'checked': '' }}>
-                            <label class="form-check-label" for="input-status-1">Magang</label>
+                            <label class="form-check-label" for="input-status-1">PKL</label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" value="1" id="input-status-2"

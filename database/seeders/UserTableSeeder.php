@@ -211,7 +211,7 @@ class UserTableSeeder extends Seeder
             'reviewable_type' => 'App\Models\Company',
             'rating' => 5,
             'title' => 'Cocok untuk berkembang',
-            'body' => 'Perusahaan ini sangat bagus untuk pengembangan skill, pembimbing peduli dengan siswa magang, dan lingkungan kerja yang nyaman.',
+            'body' => 'Perusahaan ini sangat bagus untuk pengembangan skill, pembimbing peduli dengan siswa PKL, dan lingkungan kerja yang nyaman.',
         ]);
 
         $courses = Course::all();
@@ -296,7 +296,7 @@ class UserTableSeeder extends Seeder
                     'reviewable_type' => 'App\Models\Company',
                     'rating' => rand(1, 5),
                     'title' => 'Cocok untuk berkembang',
-                    'body' => 'Perusahaan ini sangat bagus untuk pengembangan skill, pembimbing peduli dengan siswa magang, dan lingkungan kerja yang nyaman.',
+                    'body' => 'Perusahaan ini sangat bagus untuk pengembangan skill, pembimbing peduli dengan siswa PKL, dan lingkungan kerja yang nyaman.',
                 ]);
             });
 

@@ -39,7 +39,7 @@ class QuestionSeeder extends Seeder
                 'order' => 5,
             ],
             [
-                'question' => 'Bagaimana pandangan Anda mengenai program Praktik Kerja Lapangan (PKL)/magang '.$school->name.'?',
+                'question' => 'Bagaimana pandangan Anda mengenai program Praktik Kerja Lapangan (PKL)'.$school->name.'?',
                 'order' => 6,
             ],
             [

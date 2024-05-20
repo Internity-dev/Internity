@@ -130,7 +130,7 @@
                     </div>
                     {{-- Guru End --}}
 
-                    {{-- Lowongan Magang Start --}}
+                    {{-- Lowongan PKL Start --}}
                     <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
                         <div class="card">
                             <div class="card-body p-3">
@@ -138,7 +138,7 @@
                                     <div class="col-8">
                                         <div class="numbers">
                                             <h6 class="text-sm mb-0 text-capitalize font-weight-bold">
-                                                Lowongan Magang
+                                                Lowongan PKL
                                             </h6>
                                             <h5 class="font-weight-bolder mb-0">
                                                 {{ $vacancies }}
@@ -155,13 +155,13 @@
                             </div>
                         </div>
                     </div>
-                    {{-- Lowongan Magang End --}}
+                    {{-- Lowongan PKL End --}}
 
-                    {{-- Status Magang Start --}}
+                    {{-- Status PKL Start --}}
                     <div class="col-lg-6 pt-4">
                         <div class="card z-index-2">
                             <div class="card-header pb-0">
-                                <h6>Status Magang</h6>
+                                <h6>Status PKL</h6>
                             </div>
                             <div class="card-body p-3">
                                 <div class="chart">
@@ -173,7 +173,7 @@
                             </div>
                         </div>
                     </div>
-                    {{-- Status Magang End --}}
+                    {{-- Status PKL End --}}
 
                     {{-- Relevansi Start --}}
                     <div class="col-lg-6 pt-4">
@@ -194,12 +194,12 @@
                     </div>
                     {{-- Relevansi End --}}
 
-                    {{-- Waktu Magang Start --}}
+                    {{-- Waktu PKL Start --}}
                     {{-- Fullsize --}}
                     <div class="col-lg-12 pt-4">
                             <div class="card z-index-2">
                             <div class="card-header pb-0">
-                                <h6>Waktu Magang</h6>
+                                <h6>Waktu PKL</h6>
                             </div>
                             <div class="card-body p-3">
                                 <div class="chart">
@@ -212,7 +212,7 @@
                             </div>
                         </div>
                     </div>
-                    {{-- Waktu Magang End --}}
+                    {{-- Waktu PKL End --}}
                 {{-- Dashboard Data End --}}
             </div>
 
@@ -257,7 +257,7 @@
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Belum Magang', 'Sedang Magang', 'Selesai Magang'],
+                    labels: ['Belum PKL', 'Sedang PKL', 'Selesai PKL'],
                     datasets: [{
                         label: 'Jumlah',
                         data: [studentStatus['not_intern'], studentStatus['intern'], studentStatus['finished']],

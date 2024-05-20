@@ -70,6 +70,36 @@ class VacancyController extends Controller
         ], 200);
     }
 
+    public function search($searchbar) 
+    {
+        $departmentId = auth()->user()->departments()->first()->id;
+        try {
+            $vacancies = Vacancy::whereHas('company', function ($query) use ($departmentId) {
+                $query->where('department_id', $departmentId);
+            })->where('name', 'LIKE', "%$searchbar%")->orWhere('category', 'LIKE', "%$searchbar%")->orderBy('updated_at', 'desc')->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data lowongan tidak ditemukan',
+                'vacancies' => [],
+            ], 404);
+        }
+
+        if ($vacancies->count() === 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data lowongan tidak ditemukan',
+                'vacancies' => [],
+            ], 404);
+        }
+
+        return response()->json([
+            'count' => $vacancies->count(),
+            'message' => 'Data lowongan ditemukan',
+            'vacancies' => $vacancies,
+        ], 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

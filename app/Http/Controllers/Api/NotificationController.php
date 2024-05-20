@@ -49,12 +49,10 @@ class NotificationController extends Controller
             $user->notifications()->where('id', $id)->update(['read_at' => now()]);
         }
 
-        $context = [
+        return response()->json([
             'status' => true,
             'message' => 'Notifikasi berhasil ditandai sebagai telah dibaca',
-        ];
-
-        return response()->json($context, 200);
+        ], 200);
     }
 
     /**
