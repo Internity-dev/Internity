@@ -25,7 +25,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'status' => true,
-        ]);
+        ]);;
 
         $code = Code::where('code', $request->course_code)->first();
         $course = Course::find($code->codeable_id);

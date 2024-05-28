@@ -70,13 +70,18 @@ class VacancyController extends Controller
         ], 200);
     }
 
-    public function search($searchbar) 
+    public function search($searchbar)
     {
         $departmentId = auth()->user()->departments()->first()->id;
         try {
-            $vacancies = Vacancy::whereHas('company', function ($query) use ($departmentId) {
+            $vacancies = Vacancy::where(function ($query) use ($searchbar) {
+                $query->where('name', 'LIKE', "%$searchbar%")
+                    ->orWhereHas('company', function ($query) use ($searchbar) {
+                        $query->where('name', 'LIKE', "%$searchbar%");
+                    });
+            })->whereHas('company', function ($query) use ($departmentId) {
                 $query->where('department_id', $departmentId);
-            })->where('name', 'LIKE', "%$searchbar%")->orWhere('category', 'LIKE', "%$searchbar%")->orderBy('updated_at', 'desc')->get();
+            })->orderBy('updated_at', 'desc')->get();
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
