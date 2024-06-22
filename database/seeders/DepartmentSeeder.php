@@ -28,8 +28,8 @@ class DepartmentSeeder extends Seeder
                 'description' => 'Rekayasa Perangkat Lunak',
             ],
             [
-                'name' => 'MM',
-                'description' => 'Multimedia',
+                'name' => 'DKV',
+                'description' => 'Desain Komunikasi Visual',
             ],
             [
                 'name' => 'SIJA',

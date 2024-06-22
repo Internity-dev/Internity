@@ -20,11 +20,11 @@ class CourseSeeder extends Seeder
         foreach ($departments as $department) {
             $courses = [
                 [
-                    'name' => "XI $department->name 1",
+                    'name' => "XII $department->name 1",
                     'department_id' => $department->id,
                 ],
                 [
-                    'name' => "XI $department->name 2",
+                    'name' => "XII $department->name 2",
                     'department_id' => $department->id,
                 ],
             ];
