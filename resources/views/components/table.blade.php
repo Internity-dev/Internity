@@ -13,6 +13,12 @@
                             TAMBAH DATA
                         </a>
                     @endif
+
+                    @if (auth()->user()->name === 'Superadmin' && request()->is('students'))
+                        <a href="{{ route('students.export', request()->query()) }}" class="btn bg-gradient-success mb-0">
+                            CETAK DATA
+                        </a>
+                    @endif
                     <!-- Add data End -->
 
                     {{-- Filter Start --}}
