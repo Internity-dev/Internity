@@ -8,6 +8,7 @@
                 <div
                     class="header-function d-flex align-items-center  @if ($routeCreate) justify-content-between @else justify-content-end @endif">
                     <!-- Add data Start -->
+                    <div>
                     @if ($routeCreate)
                         <a href="{{ $routeCreate }}" class="btn bg-gradient-info mb-0">
                             TAMBAH DATA
@@ -19,6 +20,7 @@
                             CETAK DATA
                         </a>
                     @endif
+                    </div>
                     <!-- Add data End -->
 
                     {{-- Filter Start --}}
@@ -27,16 +29,16 @@
                     @endif
                     {{-- Filter end --}}
 
-                    {{-- <div class="card-header p-0">
+                    <div class="card-header p-0">
                         <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                             <div class="input-group">
                                 <span class="input-group-text text-body">
                                     <i class="bi bi-search"></i>
                                 </span>
-                                <input type="text" class="form-control search" placeholder="Cari..." name="search">
+                                <input type="text" class="form-control search" placeholder="Cari..." name="search" id="search-input">
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                 </div>
             </div>
 
@@ -71,6 +73,24 @@
                     buttonId: buttonId
                 });
             })
+
+            // Add event listener for search input
+            $('#search-input').on('input', function() {
+                const searchQuery = $(this).val();
+                const url = new URL(window.location.href);
+                url.searchParams.set('search', searchQuery);
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        const newDoc = new DOMParser().parseFromString(html, 'text/html');
+                        const newTbody = newDoc.querySelector('#table-data tbody');
+                        const newPagination = newDoc.querySelector('.pagination');
+                        document.querySelector('#table-data tbody').innerHTML = newTbody.innerHTML;
+                        if (newPagination) {
+                            document.querySelector('.pagination').innerHTML = newPagination.innerHTML;
+                        }
+                    });
+            });
         </script>
     @endpush
 
