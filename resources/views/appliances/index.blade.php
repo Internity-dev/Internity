@@ -5,7 +5,7 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    <x-table routeCreate="{{ route('appliances.create', ['vacancies' => encrypt($vacancy->id)]) }}"
+    <x-table
         pageName="Pendaftar {{ $vacancy->name }}" permissionCreate="appliance-create" :pagination="$appliances" :tableData="$appliances">
 
         <x-slot:thead>
@@ -100,6 +100,10 @@
             @endforeach
         </x-slot:tbody>
     </x-table>
+    <div style="float:right">
+        <a href="{{ url()->previous() }}" class="btn bg-gradient-info text-xs" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Lowongan">
+            <i class="bi bi-arrow-left"></i></a>
+    </div>
 @endsection
 
 @once

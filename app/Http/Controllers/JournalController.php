@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Journal;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreJournalRequest;
 use App\Http\Requests\UpdateJournalRequest;
@@ -74,8 +75,10 @@ class JournalController extends Controller
         $search = $request->query('search');
         $status = $request->query('status');
         $sort = $request->query('sort');
+        $userName = User::find($userId)->name;
 
         $context = $this->getData($userId,$companyId, $search, $status, $sort);
+        $context['userName'] = $userName;
         return view('journals.index', $context);
     }
 

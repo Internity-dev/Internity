@@ -4,7 +4,7 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    <x-table pageName="Jurnal PKL" :pagination="$journals" :tableData="$journals">
+    <x-table pageName="Jurnal PKL {{ $userName }}" :pagination="$journals" :tableData="$journals">
 
         <x-slot:thead>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-10">
