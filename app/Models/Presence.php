@@ -25,6 +25,15 @@ class Presence extends Model
         'presenceStatus',
     ];
 
+    protected $appends = [
+        'attachment_url',
+    ];
+
+    public function getAttachmentUrlAttribute()
+    {
+        return $this->attachment ? url($this->attachment) : null;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

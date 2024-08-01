@@ -40,7 +40,10 @@ class StudentController extends Controller
                 });
             }
             if ($isTeacher) {
-                $users = $users->teacher(auth()->user()->departments()->first()->id);
+                $teacherDepartments = auth()->user()->departments()->pluck('id')->toArray();
+                $users = $users->whereHas('departments', function ($query) use ($teacherDepartments) {
+                    $query->whereIn('department_id', $teacherDepartments);
+                });
             }
             if ($isMentor) {
                 $users = $users->mentor(auth()->user()->companies()->first()->id);
