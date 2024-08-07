@@ -47,7 +47,7 @@
                     <td class="text-sm text-center">{{ $data->date }}</td>
                     <td class="text-sm text-center">{{ $data->check_in }}</td>
                     <td class="text-sm text-center">{{ $data->check_out }}</td>
-                    <td class="text-sm text-center">{{ $data->attachment }}</td>
+                    <td class="text-sm text-center">@if ($data->attachment)<img src="{{ $data->attachment }}" alt="" width="180">@endif</td>
                     <td class="text-sm text-center">
                         <span class="badge badge-sm" style="background-color: {{ $data->presenceStatus->color }}">
                             {{ $data->presenceStatus->name }}
