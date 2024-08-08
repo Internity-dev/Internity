@@ -18,7 +18,7 @@ class NewsSeeder extends Seeder
     public function run()
     {
         $teachers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'teacher');
+            $query->where('name', 'kepala program');
         })->get();
 
         foreach ($teachers as $teacher) {

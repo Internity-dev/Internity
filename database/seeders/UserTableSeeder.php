@@ -55,7 +55,7 @@ class UserTableSeeder extends Seeder
             'email' => 'teacher@test.dev',
             'password' => bcrypt('123qweasd'),
         ]);
-        $user->assignRole('teacher');
+        $user->assignRole('kepala program');
         $user->schools()->attach($school->id);
         $user->departments()->attach($department->id);
 
@@ -301,7 +301,7 @@ class UserTableSeeder extends Seeder
         //     });
 
         //     User::factory()->count(2)->create()->each(function ($user) use ($course) {
-        //         $user->assignRole('teacher');
+        //         $user->assignRole('kepala program');
         //         $user->schools()->attach($course->department->school_id);
         //         $user->departments()->attach($course->department->id);
         //     });

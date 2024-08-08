@@ -52,7 +52,7 @@ class RoleTableSeeder extends Seeder
         $role->syncPermissions($permissions);
 
         $role = Role::create([
-            'name' => 'teacher',
+            'name' => 'kepala program',
         ]);
         $permissions = Permission::where('name', 'department-edit')
             ->orWhere('name', 'department-list')

@@ -14,6 +14,7 @@ class StudentController extends Controller
     {
         $isManager = auth()->user()->hasRole('manager');
         $isKaprog = auth()->user()->hasRole('kepala program');
+        $isTeacher = auth()->user()->hasRole('teacher');
         $isMentor = auth()->user()->hasRole('mentor');
 
         $users = User::whereRelation('roles', 'name', 'student');
@@ -40,6 +41,9 @@ class StudentController extends Controller
                 });
             }
             if ($isKaprog) {
+                $users = $users->teacher(auth()->user()->departments()->first()->id);
+            }
+            if ($isTeacher) {
                 $teacherDepartments = auth()->user()->departments()->pluck('id')->toArray();
                 $users = $users->whereHas('departments', function ($query) use ($teacherDepartments) {
                     $query->whereIn('department_id', $teacherDepartments);

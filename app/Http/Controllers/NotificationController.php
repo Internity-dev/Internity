@@ -27,7 +27,7 @@ class NotificationController extends Controller
                 $query->where('department_id', $department->id);
             })
             ->whereHas('roles', function ($query) {
-                $query->where('name', 'teacher');
+                $query->where('name', 'kepala program');
             })
             ->get();
 

@@ -29,7 +29,8 @@ class UserController extends Controller
 
         $users = User::query();
         if ($search) {
-            $users->search($search);
+            $users = $users->where('name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%');
         }
         if ($status) {
             $users->where('status', $status);
@@ -142,7 +143,7 @@ class UserController extends Controller
                 ->where('schools.id', $schoolId)
                 ->get();
         } elseif ($isKaprog) {
-            $roles = Role::where('name', 'student')->orWhere('name', 'teacher')->orWhere('name', 'mentor')->pluck('name', 'id');
+            $roles = Role::where('name', 'student')->orWhere('name', 'kepala program')->orWhere('name', 'mentor')->pluck('name', 'id');
             $schoolId = auth()->user()->schools()->first()->id;
             $schools = School::find($schoolId)->pluck('name', 'id');
             $departmentId = auth()->user()->departments()->first()->id;
@@ -262,7 +263,7 @@ class UserController extends Controller
                     ->where('schools.id', $schoolId)
                     ->get();
             } elseif ($isKaprog) {
-                $roles = Role::where('name', 'student')->orWhere('name', 'teacher')->orWhere('name', 'mentor')->pluck('name', 'id');
+                $roles = Role::where('name', 'student')->orWhere('name', 'kepala program')->orWhere('name', 'mentor')->pluck('name', 'id');
                 $schoolId = auth()->user()->schools()->first()->id;
                 $schools = School::find($schoolId)->pluck('name', 'id');
                 $departmentId = auth()->user()->departments()->first()->id;
