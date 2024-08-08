@@ -49,19 +49,6 @@
                     @endforeach
                 </x-slot:options>
             </x-form.select>
-
-            <x-form.radio label="Status *" name="status">
-                <x-slot:checkboxItem>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="1" id="input-status-1" name="status">
-                        <label class="form-check-label" for="input-status-1">Aktif</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" value="0" id="input-status-2" name="status">
-                        <label class="form-check-label" for="input-status-2">Inaktif</label>
-                    </div>
-                </x-slot:checkboxItem>
-            </x-form.radio>
         </x-slot:formBody>
     </x-form.form>
 @endsection

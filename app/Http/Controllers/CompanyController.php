@@ -15,12 +15,12 @@ class CompanyController extends Controller
     {
         $isAdmin = auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin');
         $isManager = auth()->user()->hasRole('manager');
-        $isTeacher = auth()->user()->hasRole('teacher');
+        $isKaprog = auth()->user()->hasRole('kepala program');
         $isMentor = auth()->user()->hasRole('mentor');
 
         if (!$isMentor) {
             $school ??= auth()->user()?->schools()?->first()?->id;
-            $department = $isTeacher
+            $department = $isKaprog
                 ? auth()->user()->departments()->first()->id
                 : $department;
         }
@@ -133,9 +133,9 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        $isTeacher = auth()->user()->hasRole('teacher');
+        $isKaprog = auth()->user()->hasRole('kepala program');
 
-        $departments = $isTeacher
+        $departments = $isKaprog
             ? auth()->user()->departments()->get()
             : Department::all();
 
@@ -197,9 +197,9 @@ class CompanyController extends Controller
     {
         $id = decrypt($id);
         $company = Company::findOrFail($id);
-        $isTeacher = auth()->user()->hasRole('teacher');
+        $isKaprog = auth()->user()->hasRole('kepala program');
 
-        $departments = $isTeacher
+        $departments = $isKaprog
             ? auth()->user()->departments()->get()
             : Department::all();
 

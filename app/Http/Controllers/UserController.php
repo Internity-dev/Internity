@@ -25,7 +25,7 @@ class UserController extends Controller
     {
         $isSuperadmin = auth()->user()->hasRole('super-admin');
         $isManager = auth()->user()->hasRole('manager');
-        $isTeacher = auth()->user()->hasRole('teacher');
+        $isKaprog = auth()->user()->hasRole('kepala program');
 
         $users = User::query();
         if ($search) {
@@ -52,7 +52,7 @@ class UserController extends Controller
         if ($isManager) {
             $users->manager(auth()->user()->schools()->first()->id);
         }
-        if ($isTeacher) {
+        if ($isKaprog) {
             $users->teacher(auth()->user()->departments()->first()->id);
         }
         if ($sort) {
@@ -126,7 +126,7 @@ class UserController extends Controller
     public function create()
     {
         $isManager = auth()->user()->hasRole('manager');
-        $isTeacher = auth()->user()->hasRole('teacher');
+        $isKaprog = auth()->user()->hasRole('kepala program');
 
         if ($isManager) {
             $roles = Role::where('name', '!=', 'admin')->where('name', '!=', 'super-admin')->pluck('name', 'id');
@@ -141,7 +141,7 @@ class UserController extends Controller
                 ->join('schools', 'departments.school_id', '=', 'schools.id')
                 ->where('schools.id', $schoolId)
                 ->get();
-        } elseif ($isTeacher) {
+        } elseif ($isKaprog) {
             $roles = Role::where('name', 'student')->orWhere('name', 'teacher')->orWhere('name', 'mentor')->pluck('name', 'id');
             $schoolId = auth()->user()->schools()->first()->id;
             $schools = School::find($schoolId)->pluck('name', 'id');
@@ -179,8 +179,7 @@ class UserController extends Controller
             'school_id' => 'nullable|exists:schools,id',
             'department_id' => 'nullable|exists:departments,id',
             'course_id' => 'nullable|exists:courses,id',
-            'company_id' => 'nullable|exists:companies,id',
-            'status' => 'boolean'
+            'company_id' => 'nullable|exists:companies,id'
         ]);
 
         try {
@@ -188,7 +187,7 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
-                'status' => $request->status,
+                'status' => 1,
             ])->assignRole($request->role_id);
 
             if ($request->school_id) {
@@ -247,7 +246,7 @@ class UserController extends Controller
             $isManager = auth()->user()->hasRole('manager');
 
             $isManager = auth()->user()->hasRole('manager');
-            $isTeacher = auth()->user()->hasRole('teacher');
+            $isKaprog = auth()->user()->hasRole('kepala program');
 
             if ($isManager) {
                 $roles = Role::where('name', '!=', 'admin')->where('name', '!=', 'super-admin')->pluck('name', 'id');
@@ -262,7 +261,7 @@ class UserController extends Controller
                     ->join('schools', 'departments.school_id', '=', 'schools.id')
                     ->where('schools.id', $schoolId)
                     ->get();
-            } elseif ($isTeacher) {
+            } elseif ($isKaprog) {
                 $roles = Role::where('name', 'student')->orWhere('name', 'teacher')->orWhere('name', 'mentor')->pluck('name', 'id');
                 $schoolId = auth()->user()->schools()->first()->id;
                 $schools = School::find($schoolId)->pluck('name', 'id');

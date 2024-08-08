@@ -20,10 +20,10 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         $isManager = $user->hasRole('manager');
-        $isTeacher = $user->hasRole('teacher');
+        $isKaprog = $user->hasRole('kepala program');
         $isMentor = $user->hasRole('mentor');
 
-        if ($isTeacher) {
+        if ($isKaprog) {
             $departmentId = $user->departments()->first()->id;
             $students = User::teacher($departmentId)->count();
             $companies = Company::where('department_id', $departmentId)->count();

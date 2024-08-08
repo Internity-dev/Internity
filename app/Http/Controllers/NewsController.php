@@ -25,7 +25,7 @@ class NewsController extends Controller
 
         if ($category == 'department') {
             if (! $departmentId) {
-                if (auth()->user()->hasRole('teacher')) {
+                if (auth()->user()->hasRole('kepala program')) {
                     $departmentId = auth()->user()->departments()->first()->id;
                 } else {
                     $departmentId = Department::where('school_id', $schoolId)->first()->id;
@@ -47,8 +47,8 @@ class NewsController extends Controller
 
         $news->withPath('/news')->withQueryString();
 
-        $isTeacher = auth()->user()->hasRole('teacher');
-        $departments = $isTeacher
+        $isKaprog = auth()->user()->hasRole('kepala program');
+        $departments = $isKaprog
             ? auth()->user()->departments()->pluck('name', 'id')
             : Department::where('school_id', $schoolId)->pluck('name', 'id');
 
@@ -78,7 +78,7 @@ class NewsController extends Controller
 
         if ($category == 'department') {
             if (! $departmentId) {
-                if (auth()->user()->hasRole('teacher')) {
+                if (auth()->user()->hasRole('kepala program')) {
                     $departmentId = auth()->user()->departments()->first()->id;
                 } else {
                     $departmentId = Department::where('school_id', $schoolId)->first()->id;
@@ -90,7 +90,7 @@ class NewsController extends Controller
 
         ! in_array($category, $acceptedCategory) ? abort(404) : $category = 'App\\Models\\' . ucfirst($category);
 
-        $departments = auth()->user()->hasRole('teacher')
+        $departments = auth()->user()->hasRole('kepala program')
             ? auth()->user()->departments()->pluck('name', 'id')
             : Department::where('school_id', $schoolId)->pluck('name', 'id');
 

@@ -13,7 +13,7 @@ class StudentController extends Controller
     public function getData($search=null, $status=null, $school=null, $department=null, $sort=null)
     {
         $isManager = auth()->user()->hasRole('manager');
-        $isTeacher = auth()->user()->hasRole('teacher');
+        $isKaprog = auth()->user()->hasRole('kepala program');
         $isMentor = auth()->user()->hasRole('mentor');
 
         $users = User::whereRelation('roles', 'name', 'student');
@@ -39,7 +39,7 @@ class StudentController extends Controller
                     $query->where('school_id', auth()->user()->schools()->first()->id);
                 });
             }
-            if ($isTeacher) {
+            if ($isKaprog) {
                 $teacherDepartments = auth()->user()->departments()->pluck('id')->toArray();
                 $users = $users->whereHas('departments', function ($query) use ($teacherDepartments) {
                     $query->whereIn('department_id', $teacherDepartments);
