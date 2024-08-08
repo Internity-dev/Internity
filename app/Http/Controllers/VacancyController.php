@@ -11,7 +11,9 @@ class VacancyController extends Controller
 {
     private function getData($company, $search=null, $sort=null)
     {
-        $vacancies = Vacancy::query()
+        $vacancies = Vacancy::query()->withCount(['appliances as pending_appliances_count' => function($query) {
+                $query->where('status', 'pending');
+            }])
             ->company($company)
             ->when($search, function ($query, $search) {
                 return $query->search($search);

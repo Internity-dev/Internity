@@ -46,9 +46,12 @@
                 <tr>
                     <td class="text-center">
                         @can('vacancy-list')
-                            <a href="{{ route('vacancies.index', ['company' => encrypt($data->id)]) }}"
-                                class="btn btn-info text-xs" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                title="Lowongan"><i class="bi bi-person-workspace"></i></a>
+                            <a href="{{ route('vacancies.index', ['company' => encrypt($data->id)]) }}" class="btn btn-info text-xs position-relative" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Lowongan">
+                                <i class="bi bi-person-workspace"></i>
+                                @if ($data->vacancies->sum('pending_appliances_count') > 0)
+                                    <span class="notification-dot"></span>
+                                @endif
+                            </a>
                         @endcan
                         @role('superadmin|admin|manager|teacher')
                             @can('review-list')

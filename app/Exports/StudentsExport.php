@@ -2,12 +2,11 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class StudentsExport implements FromCollection, WithHeadings
+class StudentsExport implements WithMultipleSheets
 {
     protected $request;
 
@@ -16,7 +15,7 @@ class StudentsExport implements FromCollection, WithHeadings
         $this->request = $request;
     }
 
-    public function collection()
+    public function sheets(): array
     {
         $search = $this->request->query('search');
         $status = $this->request->query('status');
@@ -25,26 +24,20 @@ class StudentsExport implements FromCollection, WithHeadings
         $sort = $this->request->query('sort');
         $sort = $sort ? $sort : 'name';
 
-        // Fetch the data using the actual logic
         $context = $this->getData($search, $status, $school, $department, $sort);
 
-        // Map the data to match the structure expected by the export
-        $data = $context['students']->map(function ($user) {
-            return [
-                'nama' => $user->name,
-                'kelas' => $user->courses()->first()?->name ?? 'N/A', // Adjust based on your actual data
-            ];
+        // Group students by 'kelas'
+        $grouped = $context['students']->groupBy(function ($user) {
+            return $user->courses()->first()?->name ?? 'N/A';
         });
 
-        return collect($data);
-    }
+        $sheets = [];
 
-    public function headings(): array
-    {
-        return [
-            'Nama',
-            'Kelas'
-        ];
+        foreach ($grouped as $kelas => $students) {
+            $sheets[] = new StudentsPerKelasSheet($kelas, $students);
+        }
+
+        return $sheets;
     }
 
     // Assuming you have this method available

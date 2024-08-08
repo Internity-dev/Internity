@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf_token" content="{{ csrf_token() }}" />
     <link rel="shortcut icon" href="{{ asset('/img/favicon.ico') }}" type="image/x-icon">
+    <style>
+        .notification-dot {
+            height: 10px;
+            width: 10px;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+    </style>
     @vite(['resources/js/app.js'])
 
     {{-- Internal Javascript --}}

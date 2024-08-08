@@ -37,9 +37,12 @@
                 <tr>
                     <td class="text-center">
                         @can('appliance-list')
-                            <a href="{{ route('appliances.index', ['vacancy' => encrypt($data->id)]) }}"
-                                class="btn btn-info text-xs" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                title="Pendaftar"><i class="bi bi-people"></i></a>
+                            <a href="{{ route('appliances.index', ['vacancy' => encrypt($data->id)]) }}" class="btn btn-info text-xs position-relative" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Pendaftar">
+                                <i class="bi bi-people"></i>
+                                @if ($data->pending_appliances_count > 0)
+                                    <span class="notification-dot"></span>
+                                @endif
+                            </a>
                         @endcan
                         @can('vacancy-edit')
                             <a href="{{ route('vacancies.edit', encrypt($data->id)) }}" class="btn btn-info text-xs"

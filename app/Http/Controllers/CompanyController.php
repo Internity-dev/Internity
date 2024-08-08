@@ -11,21 +11,26 @@ use App\Http\Requests\UpdateCompanyRequest;
 
 class CompanyController extends Controller
 {
-    public function getData($school=null, $department=null, $search=null, $status=null, $sort=null)
+    public function getData($school = null, $department = null, $search = null, $status = null, $sort = null)
     {
         $isAdmin = auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin');
         $isManager = auth()->user()->hasRole('manager');
         $isTeacher = auth()->user()->hasRole('teacher');
         $isMentor = auth()->user()->hasRole('mentor');
 
-        if (! $isMentor) {
+        if (!$isMentor) {
             $school ??= auth()->user()?->schools()?->first()?->id;
             $department = $isTeacher
                 ? auth()->user()->departments()->first()->id
                 : $department;
         }
 
-        $companies = Company::query();
+        $companies = Company::with(['vacancies' => function($query) {
+            $query->withCount(['appliances as pending_appliances_count' => function($query) {
+                $query->where('status', 'pending');
+            }]);
+        }]);
+
         if ($isMentor) {
             $companies = $companies->where('id', auth()->user()->companies()->first()->id);
         }
@@ -87,6 +92,7 @@ class CompanyController extends Controller
 
         return $context;
     }
+
 
     /**
      * Display a listing of the resource.
