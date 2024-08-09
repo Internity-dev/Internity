@@ -188,7 +188,7 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
-    public function scopeTeacher($query, $department_id)
+    public function scopeKaprog($query, $department_id)
     {
         return $query->whereRelation('departments', 'id', $department_id)
                     ->whereHas('roles', function ($query) {
@@ -205,5 +205,14 @@ class User extends Authenticatable implements MustVerifyEmail
                     ->whereHas('roles', function ($query) {
                         $query->where('name', 'student');
                     });
+    }
+
+    public function scopeTeacher($query)
+    {
+        return $query->whereIn('id', function($subQuery) {
+            $subQuery->select('user_id')
+                ->from('group_user')
+                ->where('teacher_id', auth()->id());
+        });
     }
 }

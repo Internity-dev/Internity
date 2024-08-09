@@ -56,7 +56,7 @@ class AuthController extends Controller
                     'message' => 'Versi aplikasi hanya diperuntukan untuk siswa, admin dan guru silakan gunakan versi web',
                 ], 401);
             } else {
-                if (! $user->status) {
+                if ($user->status != 1) {
                     return response()->json([
                         'error' => 'Unauthorized',
                         'message' => 'Akun anda dinonaktifkan, silakan hubungi admin'

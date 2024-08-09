@@ -22,10 +22,11 @@ class DashboardController extends Controller
         $isManager = $user->hasRole('manager');
         $isKaprog = $user->hasRole('kepala program');
         $isMentor = $user->hasRole('mentor');
+        $isTeacher = $user->hasRole('teacher');
 
         if ($isKaprog) {
             $departmentId = $user->departments()->first()->id;
-            $students = User::teacher($departmentId)->count();
+            $students = User::kaprog($departmentId)->count();
             $companies = Company::where('department_id', $departmentId)->count();
             $vacancies = Vacancy::whereHas('company', function ($query) use ($departmentId) {
                 $query->where('department_id', $departmentId);
@@ -181,6 +182,42 @@ class DashboardController extends Controller
                     $query->where('school_id', $schoolId);
                 });
             })->get()->groupBy('duration')->map(function ($item) {
+                return $item->count();
+            })->mapWithKeys(function ($item, $key) {
+                return [$key . ' bulan' => $item];
+            });
+        } elseif ($isTeacher) {
+            $students = User::teacher()->count();
+            $companies = Company::count();
+            $vacancies = Vacancy::count();
+
+            $studentStatus = [
+                'finished' => User::teacher()->whereHas('roles', function ($query) {
+                                    $query->where('name', 'student');
+                                })
+                                ->whereHas('internDates', function ($query) {
+                                    $query->where('finished', true);
+                                })->count(),
+
+                'intern' => User::teacher()->whereHas('roles', function ($query) {
+                                    $query->where('name', 'student');
+                                })
+                                ->whereHas('internDates', function ($query) {
+                                    $query->where('finished', false);
+                                })->count(),
+                'not_intern' => User::teacher()->whereHas('roles', function ($query) {
+                                    $query->where('name', 'student');
+                                })
+                                ->whereDoesntHave('internDates')->count(),
+            ];
+
+            // Get count of each match column value (1/2/3/4)
+            $monitors = Monitor::all()->groupBy('match')->map(function ($item) {
+                return $item->count();
+            });
+
+            // map keys into "{keys} bulan"
+            $internDurations = InternDate::all()->groupBy('duration')->map(function ($item) {
                 return $item->count();
             })->mapWithKeys(function ($item, $key) {
                 return [$key . ' bulan' => $item];

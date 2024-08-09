@@ -71,7 +71,7 @@ class StudentsExport implements WithMultipleSheets
             });
         }
         if ($isKaprog) {
-            $users = $users->teacher(auth()->user()->departments()->first()->id);
+            $users = $users->kaprog(auth()->user()->departments()->first()->id);
         }
         if ($isMentor) {
             $users = $users->mentor(auth()->user()->companies()->first()->id);

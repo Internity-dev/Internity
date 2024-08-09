@@ -41,13 +41,10 @@ class StudentController extends Controller
                 });
             }
             if ($isKaprog) {
-                $users = $users->teacher(auth()->user()->departments()->first()->id);
+                $users = $users->kaprog(auth()->user()->departments()->first()->id);
             }
             if ($isTeacher) {
-                $teacherDepartments = auth()->user()->departments()->pluck('id')->toArray();
-                $users = $users->whereHas('departments', function ($query) use ($teacherDepartments) {
-                    $query->whereIn('department_id', $teacherDepartments);
-                });
+                $users = $users->teacher();
             }
             if ($isMentor) {
                 $users = $users->mentor(auth()->user()->companies()->first()->id);

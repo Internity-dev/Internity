@@ -26,6 +26,7 @@ class UserController extends Controller
         $isSuperadmin = auth()->user()->hasRole('super-admin');
         $isManager = auth()->user()->hasRole('manager');
         $isKaprog = auth()->user()->hasRole('kepala program');
+        $isTeacher = auth()->user()->hasRole('teacher');
 
         $users = User::query();
         if ($search) {
@@ -54,7 +55,10 @@ class UserController extends Controller
             $users->manager(auth()->user()->schools()->first()->id);
         }
         if ($isKaprog) {
-            $users->teacher(auth()->user()->departments()->first()->id);
+            $users->kaprog(auth()->user()->departments()->first()->id);
+        }
+        if ($isTeacher) {
+            $users = $users->teacher();
         }
         if ($sort) {
             if ($sort[0] == '-') {
