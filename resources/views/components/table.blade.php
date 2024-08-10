@@ -66,13 +66,18 @@
 @once
     @push('scripts')
         <script type="module">
-            $('.button-delete').on('click', function() {
-                const buttonId = $(this).attr('id');
-
-                utils.useDeleteButton({
-                    buttonId: buttonId
+            // Function to attach event handlers
+            function attachEventHandlers() {
+                $('.button-delete').off('click').on('click', function() {
+                    const buttonId = $(this).attr('id');
+                    utils.useDeleteButton({
+                        buttonId: buttonId
+                    });
                 });
-            })
+            }
+
+            // Initial event handler attachment
+            attachEventHandlers();
 
             // Add event listener for search input
             $('#search-input').on('input', function() {
@@ -89,10 +94,11 @@
                         if (newPagination) {
                             document.querySelector('.pagination').innerHTML = newPagination.innerHTML;
                         }
+                        // Reattach event handlers after content update
+                        attachEventHandlers();
                     });
             });
         </script>
     @endpush
-
-
 @endonce
+

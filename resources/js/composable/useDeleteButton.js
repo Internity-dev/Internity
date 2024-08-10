@@ -23,7 +23,7 @@ export function useDeleteButton({ buttonId }) {
         })
         .then((value) => {
             if (value) {
-                $(`#${buttonId}`).closest("form").trigger("submit");
+                $(`#${buttonId}`).closest("form").trigger('submit');
             }
         });
 }

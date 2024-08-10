@@ -55,7 +55,7 @@
                             <form action="{{ route('users.destroy', encrypt($user->id)) }}" method="POST" class="m-0">
                                 @csrf
                                 @method('DELETE')
-                                <button id="button-{{ $user->id }}" class="button-delete btn btn-danger text-xs ms-1"
+                                <button id="delete-button-{{ $user->id }}" class="button-delete btn btn-danger text-xs ms-1"
                                     data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete" type="button"><i
                                         class="bi bi-trash"></i></button>
                             </form>
