@@ -9,6 +9,7 @@ use App\Models\School;
 use App\Models\Company;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -146,6 +147,10 @@ class UserController extends Controller
                 ->join('schools', 'departments.school_id', '=', 'schools.id')
                 ->where('schools.id', $schoolId)
                 ->get();
+            $modelIds = DB::table('model_has_roles')
+                ->where('role_id', 6)
+                ->pluck('model_id');
+            $students = User::whereIn('id', $modelIds)->get();
         } elseif ($isKaprog) {
             $roles = Role::where('name', 'student')->orWhere('name', 'kepala program')->orWhere('name', 'mentor')->pluck('name', 'id');
             $schoolId = auth()->user()->schools()->first()->id;
@@ -154,6 +159,10 @@ class UserController extends Controller
             $departments = Department::where('id', $departmentId)->pluck('name', 'id');
             $courses = Course::where('department_id', $departmentId)->pluck('name', 'id');
             $companies = Company::where('department_id', $departmentId)->get();
+            $modelIds = DB::table('model_has_roles')
+                ->where('role_id', 6)
+                ->pluck('model_id');
+            $students = User::whereIn('id', $modelIds)->get();
         } else {
             $roles = auth()->user()->hasRole('super-admin')
                 ? Role::pluck('name', 'id')
@@ -163,9 +172,13 @@ class UserController extends Controller
             $departments = Department::pluck('name', 'id');
             $courses = Course::pluck('name', 'id');
             $companies = Company::all();
+            $modelIds = DB::table('model_has_roles')
+                ->where('role_id', 6)
+                ->pluck('model_id');
+            $students = User::whereIn('id', $modelIds)->get();
         }
 
-        return view('users.create', compact('schools', 'departments', 'courses', 'roles', 'companies'));
+        return view('users.create', compact('schools', 'departments', 'courses', 'roles', 'companies', 'students'));
     }
 
     /**
@@ -184,7 +197,8 @@ class UserController extends Controller
             'school_id' => 'nullable|exists:schools,id',
             'department_id' => 'nullable|exists:departments,id',
             'course_id' => 'nullable|exists:courses,id',
-            'company_id' => 'nullable|exists:companies,id'
+            'company_id' => 'nullable|exists:companies,id',
+            'student_ids' => 'nullable|array'
         ]);
 
         try {
@@ -209,6 +223,14 @@ class UserController extends Controller
             }
             if ($request->company_id) {
                 $user->companies()->attach($request->company_id);
+            }
+            if ($request->student_ids) {
+                foreach ($request->student_ids as $studentId) {
+                    DB::table('group_user')->insert([
+                        'teacher_id' => $user->id,
+                        'user_id' => $studentId,
+                    ]);
+                }
             }
 
             return redirect()->route('users.index')

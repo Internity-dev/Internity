@@ -20,8 +20,8 @@ window.swal = swal;
 import utils from "./utils";
 window.utils = utils;
 
-import $ from "jquery";
-window.$ = $;
+// import $ from "jquery";
+// window.$ = $;
 
 import "iconify-icon";
 
