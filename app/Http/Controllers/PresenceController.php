@@ -23,7 +23,7 @@ class PresenceController extends Controller
         $companyId = $request->query('company');
         ! $companyId ? abort(400, 'Missing company id') : $companyId = decrypt($companyId);
 
-        $presences = Presence::where('user_id', $userId)->where('company_id', $companyId)->orderBy('date', 'desc')->paginate(35);
+        $presences = Presence::where('user_id', $userId)->where('company_id', $companyId)->orderBy('date', 'asc')->paginate(35);
         $presences->withPath('/presences')->withQueryString();
 
         if ($presences->count() > 0) {
