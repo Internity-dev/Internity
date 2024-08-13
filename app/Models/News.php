@@ -21,8 +21,7 @@ class News extends Model
         'image',
         'user_id',
         'newsable_id',
-        'newsable_type',
-        'image_url'
+        'newsable_type'
     ];
 
     protected $appends = [
