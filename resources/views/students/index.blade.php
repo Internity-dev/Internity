@@ -1,5 +1,5 @@
 {{-- @php
-    dd($students);
+    dd($students->toArray());
 @endphp --}}
 
 @extends('layouts.dashboard')
@@ -39,7 +39,10 @@
 
         <x-slot:tbody>
             @foreach ($students as $student)
-                @if (count($student->companies()->get()) == 0)
+            @php
+                $companies = $student->companies()->get();
+            @endphp
+                @if ($companies->isEmpty())
                     <tr>
                         <td class="text-center">
                             <a href="{{ route('presences.index', ['user' => encrypt($student->id)]) }}"
@@ -85,7 +88,7 @@
                         <td class="text-sm">{{ $student->internDates()->first()?->extend }}</td>
                     </tr>
                 @else
-                    @foreach ($student->companies()->get() as $company)
+                    @foreach ($companies as $company)
                         @php
                             $startDate = $student
                                 ->internDates()

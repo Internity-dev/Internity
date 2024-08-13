@@ -3,7 +3,7 @@
 
 @section('dashboard-content')
     <x-form.form formTitle="Edit User" formMethod="POST" spoofMethod="PUT"
-        formAction="{{ route('users.updateProfile') }}">
+        formAction="{{ route('users.updateProfile') }}" enctype="multipart/form-data">
         <x-slot:formBody>
             <x-form.input-base label="Nama *" id="input-name" type="text" name="name" value="{{ $user->name }}" />
             <x-form.input-base label="Email *" id="input-email" type="email" name="email" value="{{ $user->email }}" />
