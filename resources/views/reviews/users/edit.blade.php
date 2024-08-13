@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    <x-form.form formTitle="Kuisioner" formMethod="POST" spoofMethod="PUT" formAction="{{ route('reviews.users.update') }}" roleEdit="admin super-admin mentor manager">
+    <x-form.form formTitle="Kuisioner {{ $user->name }}" formMethod="POST" spoofMethod="PUT" formAction="{{ route('reviews.users.update') }}" roleEdit="admin super-admin mentor manager">
         <x-slot:formBody>
             @foreach ($reviews as $review)
                 <input type="hidden" name="reviews[id][]" value="{{ $review->id }}">

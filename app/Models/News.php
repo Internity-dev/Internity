@@ -22,6 +22,11 @@ class News extends Model
         'user_id',
         'newsable_id',
         'newsable_type',
+        'image_url'
+    ];
+
+    protected $appends = [
+        'image_url',
     ];
 
     protected static function booted()
@@ -39,6 +44,11 @@ class News extends Model
                 FCMService::send($user->fcm_token, [$news->title, $news->body]);
             }
         });
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? url($this->image) : null;
     }
 
     public function user()
