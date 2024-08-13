@@ -78,7 +78,7 @@
             roleSelect.addEventListener('change', function() {
                 const selectedRole = roleSelect.options[roleSelect.selectedIndex].text.toLowerCase();
 
-                if (selectedRole === 'kepala program') {
+                if (selectedRole === 'kepala program' || selectedRole === 'kepala bengkel') {
                     departmentWrapper.classList.remove('d-none');
                     courseWrapper.classList.add('d-none');
                     companyWrapper.classList.add('d-none');

@@ -9,29 +9,33 @@
             <x-form.input-base label="Email *" id="input-email" type="email" name="email" value="{{ $user->email }}" />
             <x-form.input-password label="Password *" id="input-password" name="password" />
             <x-form.input-password label="Ulangi Password *" id="input-confirm-password" name="confirm-password" />
-            <x-form.select label="Role *" id="input-role" name="role_id">
-                <option selected hidden>Pilih</option>
-                <x-slot:options>
+            <div class="form-group">
+                <label class="form-label">Role *</label>
+                <select class="form-select" name="role_id" id="input-role">
+                    <option selected hidden value="">Pilih</option>
                     @foreach ($roles as $key => $value)
                         <option value="{{ $key }}" {{ $user->roles()->first()?->id == $key ? 'selected' : '' }}>
                             {{ $value }}</option>
                     @endforeach
-                </x-slot:options>
-            </x-form.select>
+                </select>
+            </div>
 
             <input type="hidden" value="1" name="school_id">
 
-            <x-form.select label="Kompetensi Keahlian" id="input-department" name="department_id">
-                <option selected hidden>Pilih</option>
-                <x-slot:options>
-                    @foreach ($departments as $key => $value)
-                        <option value="{{ $key }}"
-                            {{ $user->departments()->first()?->id == $key ? 'selected' : '' }}>
-                            {{ $value }}</option>
-                    @endforeach
-                </x-slot:options>
-            </x-form.select>
+            <div id="department-wrapper" class="d-none">
+                <x-form.select label="Kompetensi Keahlian" id="input-department" name="department_id">
+                    <option selected hidden>Pilih</option>
+                    <x-slot:options>
+                        @foreach ($departments as $key => $value)
+                            <option value="{{ $key }}"
+                                {{ $user->departments()->first()?->id == $key ? 'selected' : '' }}>
+                                {{ $value }}</option>
+                        @endforeach
+                    </x-slot:options>
+                </x-form.select>
+            </div>
 
+            <div id="course-wrapper" class="d-none">
             <x-form.select label="Kelas" id="input-courses" name="course_id">
                 <option selected hidden>Pilih</option>
                 <x-slot:options>
@@ -41,7 +45,9 @@
                     @endforeach
                 </x-slot:options>
             </x-form.select>
+            </div>
 
+            <div id="company-wrapper" class="d-none">
             <x-form.select label="IDUKA" id="input-companies" name="company_id">
                 <option selected hidden>Pilih</option>
                 <x-slot:options>
@@ -52,6 +58,17 @@
                     @endforeach
                 </x-slot:options>
             </x-form.select>
+            </div>
+
+            <div id="student-wrapper" class="form-group d-none">
+                <label class="form-label">Siswa Bimbingan *</label>
+                
+                <select class="form-select" style="width: 100%" name="student_ids[]" id="input-student" multiple="multiple">
+                    @foreach ($students as $student)
+                        <option value="{{ $student->id }}">{{ $student->name }} - {{ $student->courses()->first()?->name }}</option>
+                    @endforeach
+                </select>
+            </div>
 
             <x-form.radio label="Status" name="status">
                 <x-slot:checkboxItem>
@@ -81,6 +98,54 @@
                 .catch(error => {
                     console.log(error);
                 });
+
+            document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.getElementById('input-role');
+            const departmentWrapper = document.getElementById('department-wrapper');
+            const courseWrapper = document.getElementById('course-wrapper');
+            const companyWrapper = document.getElementById('company-wrapper');
+            const studentWrapper = document.getElementById('student-wrapper');
+
+            if (roleSelect && departmentWrapper) {
+                roleSelect.addEventListener('change', function() {
+                    const selectedRole = roleSelect.options[roleSelect.selectedIndex].text.toLowerCase();
+                    console.log(`Selected role: ${selectedRole}`);
+
+                    if (selectedRole === 'kepala program' || selectedRole === 'kepala bengkel') {
+                        departmentWrapper.classList.remove('d-none');
+                        courseWrapper.classList.add('d-none');
+                        companyWrapper.classList.add('d-none');
+                        studentWrapper.classList.add('d-none');
+                    } else if (selectedRole === 'mentor') {
+                        departmentWrapper.classList.add('d-none');
+                        companyWrapper.classList.remove('d-none');
+                        courseWrapper.classList.add('d-none');
+                        studentWrapper.classList.add('d-none');
+                    } else if (selectedRole === 'student') {
+                        departmentWrapper.classList.add('d-none');
+                        companyWrapper.classList.add('d-none');
+                        courseWrapper.classList.remove('d-none');
+                        studentWrapper.classList.add('d-none');
+                    } else if (selectedRole === 'teacher') {
+                        departmentWrapper.classList.add('d-none');
+                        companyWrapper.classList.add('d-none');
+                        courseWrapper.classList.add('d-none');
+                        studentWrapper.classList.remove('d-none');
+                    } else {
+                        departmentWrapper.classList.add('d-none');
+                        courseWrapper.classList.add('d-none');
+                        companyWrapper.classList.add('d-none');
+                        studentWrapper.classList.add('d-none');
+                    }
+                });
+            } else {
+                console.error('Elements not found');
+            }
+        });
+
+        $(document).ready(function() {
+            $("#input-student").select2();
+        });
         </script>
     @endpush
 @endonce

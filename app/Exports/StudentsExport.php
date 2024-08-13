@@ -45,6 +45,7 @@ class StudentsExport implements WithMultipleSheets
     {
         $isManager = auth()->user()->hasRole('manager');
         $isKaprog = auth()->user()->hasRole('kepala program');
+        $isKabeng = auth()->user()->hasRole('kepala bengkel');
         $isMentor = auth()->user()->hasRole('mentor');
 
         $users = User::whereRelation('roles', 'name', 'student');
@@ -70,7 +71,7 @@ class StudentsExport implements WithMultipleSheets
                 $query->where('school_id', auth()->user()->schools()->first()->id);
             });
         }
-        if ($isKaprog) {
+        if ($isKaprog || $isKabeng) {
             $users = $users->kaprog(auth()->user()->departments()->first()->id);
         }
         if ($isMentor) {

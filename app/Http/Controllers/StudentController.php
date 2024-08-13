@@ -14,6 +14,7 @@ class StudentController extends Controller
     {
         $isManager = auth()->user()->hasRole('manager');
         $isKaprog = auth()->user()->hasRole('kepala program');
+        $isKabeng = auth()->user()->hasRole('kepala bengkel');
         $isTeacher = auth()->user()->hasRole('teacher');
         $isMentor = auth()->user()->hasRole('mentor');
 
@@ -40,7 +41,7 @@ class StudentController extends Controller
                     $query->where('school_id', auth()->user()->schools()->first()->id);
                 });
             }
-            if ($isKaprog) {
+            if ($isKaprog || $isKabeng) {
                 $users = $users->kaprog(auth()->user()->departments()->first()->id);
             }
             if ($isTeacher) {

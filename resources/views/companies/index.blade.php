@@ -34,7 +34,7 @@
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-16">
                 Phone
             </th>
-            @role('superadmin|admin|manager|kepala program|student')
+            @role('superadmin|admin|manager|kepala program|kepala bengkel|student')
                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-5">
                     Rating
                 </th>
@@ -53,7 +53,7 @@
                                 @endif
                             </a>
                         @endcan
-                        @role('superadmin|admin|manager|kepala program')
+                        @role('superadmin|admin|manager|kepala program|kepala bengkel')
                             @can('review-list')
                                 <a href="{{ route('reviews.companies.index', ['company' => encrypt($data->id)]) }}"
                                     class="btn btn-info text-xs" data-bs-toggle="tooltip" data-bs-placement="bottom"
@@ -87,7 +87,7 @@
                     @php
                         $rating = number_format($data->reviews()?->avg('rating'), 1);
                     @endphp
-                    @role('superadmin|admin|manager|kepala program|student')
+                    @role('superadmin|admin|manager|kepala program|kepala bengkel|student')
                         <td class="text-sm text-center">
                             @for($i = 0; $i < $rating; $i++)
                                 <i class="bi bi-star-fill text-warning" style="font-size: 0.7rem;"></i>

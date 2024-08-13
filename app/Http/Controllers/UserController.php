@@ -27,6 +27,7 @@ class UserController extends Controller
         $isSuperadmin = auth()->user()->hasRole('super-admin');
         $isManager = auth()->user()->hasRole('manager');
         $isKaprog = auth()->user()->hasRole('kepala program');
+        $isKabeng = auth()->user()->hasRole('kepala bengkel');
         $isTeacher = auth()->user()->hasRole('teacher');
 
         $users = User::query();
@@ -55,7 +56,7 @@ class UserController extends Controller
         if ($isManager) {
             $users->manager(auth()->user()->schools()->first()->id);
         }
-        if ($isKaprog) {
+        if ($isKaprog || $isKabeng) {
             $users->kaprog(auth()->user()->departments()->first()->id);
         }
         if ($isTeacher) {
@@ -133,6 +134,7 @@ class UserController extends Controller
     {
         $isManager = auth()->user()->hasRole('manager');
         $isKaprog = auth()->user()->hasRole('kepala program');
+        $isKabeng = auth()->user()->hasRole('kepala bengkel');
 
         if ($isManager) {
             $roles = Role::where('name', '!=', 'admin')->where('name', '!=', 'super-admin')->pluck('name', 'id');
@@ -153,6 +155,18 @@ class UserController extends Controller
             $students = User::whereIn('id', $modelIds)->get();
         } elseif ($isKaprog) {
             $roles = Role::where('name', 'student')->orWhere('name', 'kepala program')->orWhere('name', 'mentor')->pluck('name', 'id');
+            $schoolId = auth()->user()->schools()->first()->id;
+            $schools = School::find($schoolId)->pluck('name', 'id');
+            $departmentId = auth()->user()->departments()->first()->id;
+            $departments = Department::where('id', $departmentId)->pluck('name', 'id');
+            $courses = Course::where('department_id', $departmentId)->pluck('name', 'id');
+            $companies = Company::where('department_id', $departmentId)->get();
+            $modelIds = DB::table('model_has_roles')
+                ->where('role_id', 6)
+                ->pluck('model_id');
+            $students = User::whereIn('id', $modelIds)->get();
+        } elseif ($isKabeng) {
+            $roles = Role::where('name', 'mentor')->pluck('name', 'id');
             $schoolId = auth()->user()->schools()->first()->id;
             $schools = School::find($schoolId)->pluck('name', 'id');
             $departmentId = auth()->user()->departments()->first()->id;
@@ -274,6 +288,7 @@ class UserController extends Controller
 
             $isManager = auth()->user()->hasRole('manager');
             $isKaprog = auth()->user()->hasRole('kepala program');
+            $isKabeng = auth()->user()->hasRole('kepala bengkel');
 
             if ($isManager) {
                 $roles = Role::where('name', '!=', 'admin')->where('name', '!=', 'super-admin')->pluck('name', 'id');
@@ -288,6 +303,10 @@ class UserController extends Controller
                     ->join('schools', 'departments.school_id', '=', 'schools.id')
                     ->where('schools.id', $schoolId)
                     ->get();
+                $modelIds = DB::table('model_has_roles')
+                    ->where('role_id', 6)
+                    ->pluck('model_id');
+                $students = User::whereIn('id', $modelIds)->get();
             } elseif ($isKaprog) {
                 $roles = Role::where('name', 'student')->orWhere('name', 'kepala program')->orWhere('name', 'mentor')->pluck('name', 'id');
                 $schoolId = auth()->user()->schools()->first()->id;
@@ -296,6 +315,22 @@ class UserController extends Controller
                 $departments = Department::where('id', $departmentId)->pluck('name', 'id');
                 $courses = Course::where('department_id', $departmentId)->pluck('name', 'id');
                 $companies = Company::where('department_id', $departmentId)->get();
+                $modelIds = DB::table('model_has_roles')
+                    ->where('role_id', 6)
+                    ->pluck('model_id');
+                $students = User::whereIn('id', $modelIds)->get();
+            } elseif ($isKabeng) {
+                $roles = Role::where('name', 'mentor')->pluck('name', 'id');
+                $schoolId = auth()->user()->schools()->first()->id;
+                $schools = School::find($schoolId)->pluck('name', 'id');
+                $departmentId = auth()->user()->departments()->first()->id;
+                $departments = Department::where('id', $departmentId)->pluck('name', 'id');
+                $courses = Course::where('department_id', $departmentId)->pluck('name', 'id');
+                $companies = Company::where('department_id', $departmentId)->get();
+                $modelIds = DB::table('model_has_roles')
+                    ->where('role_id', 6)
+                    ->pluck('model_id');
+                $students = User::whereIn('id', $modelIds)->get();
             } else {
                 $roles = auth()->user()->hasRole('super-admin')
                     ? Role::pluck('name', 'id')
@@ -305,9 +340,13 @@ class UserController extends Controller
                 $departments = Department::pluck('name', 'id');
                 $courses = Course::pluck('name', 'id');
                 $companies = Company::all();
+                $modelIds = DB::table('model_has_roles')
+                    ->where('role_id', 6)
+                    ->pluck('model_id');
+                $students = User::whereIn('id', $modelIds)->get();
             }
 
-            return view('users.edit', compact('user', 'schools', 'departments', 'courses', 'roles', 'companies'));
+            return view('users.edit', compact('user', 'schools', 'departments', 'courses', 'roles', 'companies', 'students'));
         } catch (\Exception $e) {
             return redirect()->route('users.index')
                 ->with('error', 'User tidak ditemukan');
