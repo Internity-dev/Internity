@@ -5,7 +5,7 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    <x-table pageName="Data Guru" routeCreate="{{ route('users.create') }}" :pagination="$teachers" :tableData="$teachers">
+    <x-table pageName="Data Guru" :pagination="$teachers" :tableData="$teachers">
 
         <x-slot:thead>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15">

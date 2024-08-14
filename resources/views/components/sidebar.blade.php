@@ -31,7 +31,7 @@
                                 class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center text-white">
                                 <iconify-icon icon="{{ $item->icon }}"></iconify-icon>
                             </div>
-                            <span class="nav-link-text ms-1">{{ $item->name }}</span>
+                            <span class="nav-link-text ms-1">{{ auth()->user()->hasRole('kepala bengkel') && $item->name == "User" ? "Mentor" : $item->name }}</span>
                         </a>
                     </li>
                 @endif

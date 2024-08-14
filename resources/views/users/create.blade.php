@@ -51,16 +51,6 @@
                     </x-slot:options>
                 </x-form.select>
             </div>
-
-            <div id="student-wrapper" class="form-group d-none">
-                <label class="form-label">Siswa Bimbingan *</label>
-                
-                <select class="form-select" style="width: 100%" name="student_ids[]" id="input-student" multiple="multiple">
-                    @foreach ($students as $student)
-                        <option value="{{ $student->id }}">{{ $student->name }} - {{ $student->courses()->first()?->name }}</option>
-                    @endforeach
-                </select>
-            </div>
         </x-slot:formBody>
     </x-form.form>
 @endsection
@@ -72,7 +62,6 @@
         const departmentWrapper = document.getElementById('department-wrapper');
         const courseWrapper = document.getElementById('course-wrapper');
         const companyWrapper = document.getElementById('company-wrapper');
-        const studentWrapper = document.getElementById('student-wrapper');
 
         if (roleSelect && departmentWrapper) {
             roleSelect.addEventListener('change', function() {
@@ -82,36 +71,27 @@
                     departmentWrapper.classList.remove('d-none');
                     courseWrapper.classList.add('d-none');
                     companyWrapper.classList.add('d-none');
-                    studentWrapper.classList.add('d-none');
                 } else if (selectedRole === 'mentor') {
                     departmentWrapper.classList.add('d-none');
                     companyWrapper.classList.remove('d-none');
                     courseWrapper.classList.add('d-none');
-                    studentWrapper.classList.add('d-none');
                 } else if (selectedRole === 'student') {
                     departmentWrapper.classList.add('d-none');
                     companyWrapper.classList.add('d-none');
                     courseWrapper.classList.remove('d-none');
-                    studentWrapper.classList.add('d-none');
                 } else if (selectedRole === 'teacher') {
                     departmentWrapper.classList.add('d-none');
                     companyWrapper.classList.add('d-none');
                     courseWrapper.classList.add('d-none');
-                    studentWrapper.classList.remove('d-none');
                 } else {
                     departmentWrapper.classList.add('d-none');
                     courseWrapper.classList.add('d-none');
                     companyWrapper.classList.add('d-none');
-                    studentWrapper.classList.add('d-none');
                 }
             });
         } else {
             console.error('Elements not found');
         }
-    });
-
-    $(document).ready(function() {
-        $("#input-student").select2();
     });
     </script>
 @endpush
