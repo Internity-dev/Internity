@@ -25,6 +25,7 @@ use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\PresenceStatusController;
 use App\Http\Controllers\ScorePredicateController;
 use App\Exports\StudentsExport;
+use App\Http\Controllers\TeacherController;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
@@ -82,6 +83,10 @@ Route::middleware(['auth'])->group( function () {
     Route::get('/students/export', function (Request $request) {
         return Excel::download(new StudentsExport($request), 'students.xlsx');
     })->name('students.export');
+
+    Route::get('teachers', [TeacherController::class, 'index'])->name('teachers.index');
+    Route::get('teachers/edit/{id}', [TeacherController::class, 'edit'])->name('teachers.edit');
+    Route::put('teachers/update/{id}', [TeacherController::class, 'update'])->name('teachers.update');
 
     Route::resource('/appliances', ApplianceController::class);
     Route::put('appliances/{id}/accept', [ApplianceController::class, 'accept'])->name('appliances.accept');

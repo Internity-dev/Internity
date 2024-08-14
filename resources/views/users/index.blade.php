@@ -6,7 +6,7 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    <x-table routeCreate="{{ route('users.create') }}" permissionCreate="user-create" pageName="user" :pagination="$users"
+    <x-table routeCreate="{{ route('users.create') }}" permissionCreate="user-create" pageName="{{ auth()->user()->hasRole('kepala bengkel') ? 'mentor' : 'user' }}" :pagination="$users"
         :tableData="$users">
 
         <x-slot:thead>

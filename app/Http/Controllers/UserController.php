@@ -56,8 +56,13 @@ class UserController extends Controller
         if ($isManager) {
             $users->manager(auth()->user()->schools()->first()->id);
         }
-        if ($isKaprog || $isKabeng) {
+        if ($isKaprog) {
             $users->kaprog(auth()->user()->departments()->first()->id);
+        }
+        if ($isKabeng) {
+            $users->whereHas('roles', function($query) {
+                $query->where('name', 'mentor');
+            });
         }
         if ($isTeacher) {
             $users = $users->teacher();
@@ -307,6 +312,10 @@ class UserController extends Controller
                     ->where('role_id', 6)
                     ->pluck('model_id');
                 $students = User::whereIn('id', $modelIds)->get();
+                $selectedStudentIds = DB::table('group_user')
+                ->where('teacher_id', $id)
+                ->pluck('user_id')
+                ->toArray();
             } elseif ($isKaprog) {
                 $roles = Role::where('name', 'student')->orWhere('name', 'kepala program')->orWhere('name', 'mentor')->pluck('name', 'id');
                 $schoolId = auth()->user()->schools()->first()->id;
@@ -319,6 +328,10 @@ class UserController extends Controller
                     ->where('role_id', 6)
                     ->pluck('model_id');
                 $students = User::whereIn('id', $modelIds)->get();
+                $selectedStudentIds = DB::table('group_user')
+                ->where('teacher_id', $id)
+                ->pluck('user_id')
+                ->toArray();
             } elseif ($isKabeng) {
                 $roles = Role::where('name', 'mentor')->pluck('name', 'id');
                 $schoolId = auth()->user()->schools()->first()->id;
@@ -331,6 +344,10 @@ class UserController extends Controller
                     ->where('role_id', 6)
                     ->pluck('model_id');
                 $students = User::whereIn('id', $modelIds)->get();
+                $selectedStudentIds = DB::table('group_user')
+                ->where('teacher_id', $id)
+                ->pluck('user_id')
+                ->toArray();
             } else {
                 $roles = auth()->user()->hasRole('super-admin')
                     ? Role::pluck('name', 'id')
@@ -344,9 +361,13 @@ class UserController extends Controller
                     ->where('role_id', 6)
                     ->pluck('model_id');
                 $students = User::whereIn('id', $modelIds)->get();
+                $selectedStudentIds = DB::table('group_user')
+                ->where('teacher_id', $id)
+                ->pluck('user_id')
+                ->toArray();
             }
 
-            return view('users.edit', compact('user', 'schools', 'departments', 'courses', 'roles', 'companies', 'students'));
+            return view('users.edit', compact('user', 'schools', 'departments', 'courses', 'roles', 'companies', 'students', 'selectedStudentIds'));
         } catch (\Exception $e) {
             return redirect()->route('users.index')
                 ->with('error', 'User tidak ditemukan');
@@ -374,6 +395,7 @@ class UserController extends Controller
             'department_id' => 'nullable|exists:departments,id',
             'course_id' => 'nullable|exists:courses,id',
             'company_id' => 'nullable|exists:companies,id',
+            'student_ids' => 'nullable|array',
             'status' => 'boolean',
         ]);
 
@@ -397,6 +419,15 @@ class UserController extends Controller
             }
             if ($request->company_id) {
                 $user->companies()->sync($request->company_id);
+            }
+            if ($request->student_ids) {
+                DB::table('group_user')->where('teacher_id', $id)->delete();
+                foreach ($request->student_ids as $studentId) {
+                    DB::table('group_user')->insert([
+                        'teacher_id' => $user->id,
+                        'user_id' => $studentId,
+                    ]);
+                }
             }
 
             return redirect()->route('users.index')

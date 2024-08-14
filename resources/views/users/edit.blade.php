@@ -1,6 +1,5 @@
 @extends('layouts.dashboard')
 
-
 @section('dashboard-content')
     <x-form.form formTitle="Edit User" formMethod="POST" spoofMethod="PUT"
         formAction="{{ route('users.update', encrypt($user->id)) }}">
@@ -65,7 +64,7 @@
                 
                 <select class="form-select" style="width: 100%" name="student_ids[]" id="input-student" multiple="multiple">
                     @foreach ($students as $student)
-                        <option value="{{ $student->id }}">{{ $student->name }} - {{ $student->courses()->first()?->name }}</option>
+                        <option value="{{ $student->id }}" {{ in_array($student->id, $selectedStudentIds) ? 'selected' : '' }}>{{ $student->name }} - {{ $student->courses()->first()?->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -91,23 +90,14 @@
 @once
     @push('scripts')
         <script type="module">
-            axios.get('/departments/search?school=1')
-                .then(response => {
-                    console.log(response);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-
             document.addEventListener('DOMContentLoaded', function() {
-            const roleSelect = document.getElementById('input-role');
-            const departmentWrapper = document.getElementById('department-wrapper');
-            const courseWrapper = document.getElementById('course-wrapper');
-            const companyWrapper = document.getElementById('company-wrapper');
-            const studentWrapper = document.getElementById('student-wrapper');
+                const roleSelect = document.getElementById('input-role');
+                const departmentWrapper = document.getElementById('department-wrapper');
+                const courseWrapper = document.getElementById('course-wrapper');
+                const companyWrapper = document.getElementById('company-wrapper');
+                const studentWrapper = document.getElementById('student-wrapper');
 
-            if (roleSelect && departmentWrapper) {
-                roleSelect.addEventListener('change', function() {
+                function handleRoleChange() {
                     const selectedRole = roleSelect.options[roleSelect.selectedIndex].text.toLowerCase();
                     console.log(`Selected role: ${selectedRole}`);
 
@@ -137,15 +127,18 @@
                         companyWrapper.classList.add('d-none');
                         studentWrapper.classList.add('d-none');
                     }
-                });
-            } else {
-                console.error('Elements not found');
-            }
-        });
+                }
 
-        $(document).ready(function() {
-            $("#input-student").select2();
-        });
+                // Set up event listener
+                roleSelect.addEventListener('change', handleRoleChange);
+
+                // Trigger change event on page load to set initial visibility
+                handleRoleChange();
+            });
+
+            $(document).ready(function() {
+                $("#input-student").select2();
+            });
         </script>
     @endpush
 @endonce

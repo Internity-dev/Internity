@@ -82,6 +82,8 @@ class PermissionTableSeeder extends Seeder
 
             'student-list',
 
+            'teacher-list',
+
             'journal-list',
             'journal-create',
             'journal-edit',

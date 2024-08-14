@@ -37,6 +37,15 @@ class MenuSeeder extends Seeder
                 'permission_id' => Permission::where('name', 'student-list')->first()->id,
             ],
             [
+                'name' => 'Guru',
+                'icon' => 'mdi:account-multiple',
+                'url' => 'teachers',
+                'status' => 1,
+                'order' => 11,
+                'parent_id' => null,
+                'permission_id' => Permission::where('name', 'teacher-list')->first()->id,
+            ],
+            [
                 'name' => 'IDUKA',
                 'icon' => 'mdi:building',
                 'url' => 'companies',

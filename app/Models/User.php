@@ -199,6 +199,13 @@ class User extends Authenticatable implements MustVerifyEmail
                     });
     }
 
+    public function scopeKabeng($query)
+    {
+        return $query->whereHas('roles', function ($query) {
+                        $query->where('name', 'teacher');
+                    });
+    }
+
     public function scopeMentor($query, $company_id)
     {
         return $query->whereRelation('companies', 'id', $company_id)
