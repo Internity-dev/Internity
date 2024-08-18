@@ -40,9 +40,9 @@
         <x-slot:tbody>
             @foreach ($students as $student)
             @php
-                $companies = $student->companies()->get();
+                $company = $student->companies()->first();
             @endphp
-                @if ($companies->isEmpty())
+                @if (!$company)
                     <tr>
                         <td class="text-center">
                             <a href="{{ route('presences.index', ['user' => encrypt($student->id)]) }}"
@@ -88,7 +88,6 @@
                         <td class="text-sm">{{ $student->internDates()->first()?->extend }}</td>
                     </tr>
                 @else
-                    @foreach ($companies as $company)
                         @php
                             $startDate = $student
                                 ->internDates()
@@ -164,7 +163,6 @@
                                 </span>
                             </td>
                         </tr>
-                    @endforeach
                 @endif
             @endforeach
         </x-slot:tbody>
