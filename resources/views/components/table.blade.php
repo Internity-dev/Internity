@@ -20,6 +20,18 @@
                             CETAK DATA
                         </a>
                     @endif
+
+                    @if (request()->is('presences'))
+                        <a href="{{ route('presences.bulkApprove', request()->query()) }}" class="btn bg-gradient-success mb-0" id="approve-all-presences">
+                            APPROVE ALL
+                        </a>
+                    @endif
+
+                    @if (request()->is('journals'))
+                        <a href="{{ route('journals.bulkApprove', request()->query()) }}" class="btn bg-gradient-success mb-0" id="approve-all-journals">
+                            APPROVE ALL
+                        </a>
+                    @endif
                     </div>
                     <!-- Add data End -->
 
@@ -98,6 +110,70 @@
                         attachEventHandlers();
                     });
             });
+
+            $(document).ready(function() {
+            $('#approve-all-presences').on('click', function(e) {
+                e.preventDefault();
+                const url = $(this).attr('href');
+
+                window.swal({
+                    title: "Are you sure?",
+                    text: "You are about to approve all valid presences.",
+                    icon: "warning",
+                    buttons: {
+                        cancel: {
+                            text: "Cancel",
+                            value: null,
+                            visible: true,
+                            className: "btn btn-primary",
+                            closeModal: true,
+                        },
+                        confirm: {
+                            text: "Approve All",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-success",
+                            closeModal: true,
+                        },
+                    },
+                }).then((value) => {
+                    if (value) {
+                        window.location.href = url;
+                    }
+                });
+            });
+
+            $('#approve-all-journals').on('click', function(e) {
+            e.preventDefault();
+            const url = $(this).attr('href');
+
+            window.swal({
+                title: "Are you sure?",
+                text: "You are about to approve all valid journals.",
+                icon: "warning",
+                buttons: {
+                    cancel: {
+                        text: "Cancel",
+                        value: null,
+                        visible: true,
+                        className: "btn btn-primary",
+                        closeModal: true,
+                    },
+                    confirm: {
+                        text: "Approve All",
+                        value: true,
+                        visible: true,
+                        className: "btn btn-success",
+                        closeModal: true,
+                    },
+                },
+            }).then((value) => {
+                if (value) {
+                    window.location.href = url;
+                }
+            });
+        });
+        });
         </script>
     @endpush
 @endonce

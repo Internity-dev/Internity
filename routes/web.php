@@ -100,9 +100,11 @@ Route::middleware(['auth'])->group( function () {
 
     Route::resource('journals', JournalController::class);
     Route::put('journals/{id}/approve', [JournalController::class, 'approve'])->name('journals.approve');
+    Route::put('/journals/bulk-approve', [JournalController::class, 'bulkApprove'])->name('journals.bulkApprove');
 
     Route::resource('presences', PresenceController::class);
     Route::put('presences/{id}/approve', [PresenceController::class, 'approve'])->name('presences.approve');
+    Route::put('/presences/bulk-approve', [PresenceController::class, 'bulkApprove'])->name('presences.bulkApprove');
 
     Route::resource('monitors', MonitorController::class);
 

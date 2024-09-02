@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    <x-table pageName="Riwayat Kehadiran {{ $userName }}" permissionCreate="course-create" :pagination="$presences"
+    <x-table pageName="Riwayat Kehadiran {{ $userName }}" :pagination="$presences"
         :tableData="$presences">
         <x-slot:thead>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-5">

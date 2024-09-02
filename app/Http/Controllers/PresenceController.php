@@ -133,4 +133,19 @@ class PresenceController extends Controller
 
         return redirect()->back()->with('success', 'Data kehadiran berhasil disetujui');
     }
+
+    public function bulkApprove(Request $request)
+    {
+        $userId = decrypt($request->query('user'));
+        $companyId = decrypt($request->query('company'));
+
+        // Update all presences with check_in and check_out values
+        Presence::where('user_id', $userId)
+                ->where('company_id', $companyId)
+                ->whereNotNull('check_in')
+                ->whereNotNull('check_out')
+                ->update(['is_approved' => true]);
+
+        return redirect()->back()->with('success', 'Semua kehadiran yang valid berhasil disetujui.');
+    }
 }

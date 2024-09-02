@@ -227,4 +227,19 @@ class JournalController extends Controller
 
         return back()->with($context);
     }
+
+    public function bulkApprove(Request $request)
+    {
+        $userId = $request->query('user');
+        $companyId = $request->query('company');
+
+        $journals = Journal::where('user_id', $userId)
+            ->where('company_id', $companyId)
+            ->whereNotNull('work_type')
+            ->whereNotNull('description')
+            ->where('is_approved', false)
+            ->update(['is_approved' => true]);
+
+        return back()->with('success', 'All valid journals have been approved.');
+    }
 }
