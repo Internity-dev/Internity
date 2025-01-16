@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Course;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Models\PresenceStatus;
 
@@ -121,16 +122,7 @@ class StudentController extends Controller
         if ($company) {
             $user = User::whereRelation('roles', 'name', 'student')
                 ->where('id', $id)
-                ->whereHas('companies', function($query) use ($company) {
-                    $query->where('company_id', $company);
-                })
-                ->with(['companies' => function($query) use ($company) {
-                    $query->where('company_id', $company);
-                }, 'courses' => function($query) use ($company) {
-                    $query->first();
-                },'internDates' => function($query) use ($company) {
-                    $query->where('company_id', $company);
-                }])
+                ->with(['companies', 'internDates'])
                 ->first();
         } else {
             $user = User::whereRelation('roles', 'name', 'student')
@@ -138,7 +130,17 @@ class StudentController extends Controller
                 ->first();
         }
 
-        $company = $company ? $user->companies()->first() : null;
+         $companiesData = $user->companies->map(function ($company) use ($user) {
+            $internDate = $user->internDates->where('company_id', $company->id)->first();
+            return [
+                'id' => $company->id,
+                'name' => $company->name,
+                'start_date' => $internDate?->start_date,
+                'end_date' => $internDate?->end_date,
+                'extend' => $internDate?->extend,
+                'finished' => $internDate?->finished,
+            ];
+        });
 
         if ($user) {
             $courses = Course::where('department_id', $user->departments()->first()->id)->pluck('name', 'id');
@@ -147,7 +149,7 @@ class StudentController extends Controller
                 'status' => true,
                 'message' => 'Data siswa ditemukan',
                 'student' => $user,
-                'company' => $company,
+                'companiesData' => $companiesData,
                 'courses' => $courses,
             ];
         } else {
@@ -155,24 +157,28 @@ class StudentController extends Controller
                 'status' => false,
                 'message' => 'Data siswa tidak ditemukan',
                 'student' => null,
-                'company' => $company,
+                'companiesData' => $companiesData,
                 'courses' => null
             ];
         }
+
+        // dd($context);
 
         return view('students.edit', $context);
     }
 
     public function update(Request $request, $id)
     {
-        $company = $request->query('company');
-        $company = $company ? decrypt($company) : null;
         $id = decrypt($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
             'skills' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
+            'companies.*.start_date' => 'nullable|date',
+            'companies.*.end_date' => 'nullable|date',
+            'companies.*.extend' => 'nullable|integer',
+            'companies.*.finished' => 'nullable|boolean',
         ]);
 
         $user = User::whereRelation('roles', 'name', 'student')
@@ -186,46 +192,45 @@ class StudentController extends Controller
             ]);
             $user->courses()->sync($request->course_id);
 
-            if ($company) {
+            if ($request->has('companies')) {
+                foreach ($request->companies as $companyId => $data) {
+                    $company = Company::find($companyId);
+                    if ($company) {
+                        $user->internDates()->updateOrCreate(
+                            ['company_id' => $companyId],
+                            [
+                                'start_date' => $data['start_date'] ?? null,
+                                'end_date' => $data['end_date'] ?? null,
+                                'extend' => $data['extend'] ?? 0,
+                                'finished' => $data['finished'] ?? 0,
+                            ]
+                        );
 
-                $request->validate([
-                    'start_date' => 'required|date',
-                    'end_date' => 'required|date',
-                    'extend' => 'nullable|integer',
-                    'finished' => 'required|boolean',
-                ]);
+                        $presencePending = PresenceStatus::where('name', 'Pending')->first('id')->id;
+                        $startDate = Carbon::parse($data['start_date']);
+                        $endDate = Carbon::parse($data['end_date']);
 
-                $user->internDates()->where('company_id', $company)->update([
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'extend' => $request->extend,
-                    'finished' => $request->finished,
-                ]);
+                        for ($i = $startDate; $i <= $endDate; $i->addDay()) {
+                            $presence = $user->presences()->where('company_id', $companyId)->where('date', $i)->first();
+                            if (!$presence) {
+                                $user->presences()->create([
+                                    'company_id' => $companyId,
+                                    'date' => $i,
+                                    'presence_status_id' => $presencePending,
+                                ]);
+                            }
 
-                $presencePending = PresenceStatus::where('name', 'Pending')->first('id')->id;
-                $startDate = Carbon::parse($request->start_date);
-                $endDate = Carbon::parse($request->end_date);
-
-                for ($i = $startDate; $i <= $endDate; $i->addDay()) {
-                    $presence = $user->presences()->where('company_id', $company)->where('date', $i)->first();
-                    $journal = $user->journals()->where('company_id', $company)->where('date', $i)->first();
-
-                    if (! $presence) {
-                        $user->presences()->create([
-                            'company_id' => $company,
-                            'date' => $i,
-                            'presence_status_id' => $presencePending,
-                        ]);
-                    }
-                    if (! $journal) {
-                        $user->journals()->create([
-                            'company_id' => $company,
-                            'date' => $i,
-                        ]);
+                            $journal = $user->journals()->where('company_id', $companyId)->where('date', $i)->first();
+                            if (!$journal) {
+                                $user->journals()->create([
+                                    'company_id' => $companyId,
+                                    'date' => $i,
+                                ]);
+                            }
+                        }
                     }
                 }
             }
-
             return redirect()->route('students.index')->with('success', 'Data siswa berhasil diperbarui');
         } else {
             return redirect()->route('students.index')->with('error', 'Data siswa tidak ditemukan');

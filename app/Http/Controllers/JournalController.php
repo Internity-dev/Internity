@@ -27,6 +27,8 @@ class JournalController extends Controller
                 $sortType = 'asc';
             }
             $journals = $journals->orderBy($sort, $sortType);
+        } else {
+            $journals = $journals->orderBy('date', 'desc');
         }
         if ($paginate) {
             $journals = $journals->paginate(10);
