@@ -40,9 +40,15 @@
         <x-slot:tbody>
             @foreach ($students as $student)
             @php
-                $company = $student->companies()->first();
+                $companies = $student->companies->filter(function($company) {
+                    if (auth()->user()->hasRole('mentor')) {
+                        return auth()->user()->companies->pluck('id')->contains($company->id);
+                    }
+
+                    return true;
+                });
             @endphp
-                @if (!$company)
+                @if ($companies->isEmpty())
                     <tr>
                         <td class="text-center">
                             <a href="{{ route('presences.index', ['user' => encrypt($student->id)]) }}"
@@ -88,15 +94,13 @@
                         <td class="text-sm">{{ $student->internDates()->first()?->extend }}</td>
                     </tr>
                 @else
+                    @foreach ($companies as $company)
                         @php
-                            $startDate = $student
-                                ->internDates()
-                                ->where('company_id', $company->id)
-                                ->first()?->start_date;
-                            $endDate = $student
-                                ->internDates()
-                                ->where('company_id', $company->id)
-                                ->first()?->end_date;
+                            $internDate = $student->internDates()->where('company_id', $company->id)->first();
+                            $startDate = $internDate?->start_date;
+                            $endDate = $internDate?->end_date;
+                            $extend = $internDate?->extend;
+                            $finished = $internDate?->finished;
                         @endphp
                         <tr>
                             <td class="text-center">
@@ -163,6 +167,10 @@
                                 </span>
                             </td>
                         </tr>
+                        @if (auth()->user()->hasRole('mentor'))
+                            @break
+                        @endif
+                    @endforeach
                 @endif
             @endforeach
         </x-slot:tbody>

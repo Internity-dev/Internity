@@ -19,7 +19,8 @@ class StudentController extends Controller
         $isTeacher = auth()->user()->hasRole('teacher');
         $isMentor = auth()->user()->hasRole('mentor');
 
-        $users = User::whereRelation('roles', 'name', 'student');
+        $users = User::whereRelation('roles', 'name', 'student')
+        ->with(['companies', 'internDates', 'schools', 'departments']); 
             if ($search) {
                 $users = $users->where('name', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%');
@@ -129,18 +130,34 @@ class StudentController extends Controller
                         ->where('id', $id)
                 ->first();
         }
-
-         $companiesData = $user->companies->map(function ($company) use ($user) {
-            $internDate = $user->internDates->where('company_id', $company->id)->first();
-            return [
-                'id' => $company->id,
-                'name' => $company->name,
-                'start_date' => $internDate?->start_date,
-                'end_date' => $internDate?->end_date,
-                'extend' => $internDate?->extend,
-                'finished' => $internDate?->finished,
-            ];
-        });
+        if (auth()->user()->hasRole('mentor')) {
+            $mentorCompanyIds = auth()->user()->companies->pluck('id')->toArray();
+            $companiesData = $user->companies->filter(function ($company) use ($mentorCompanyIds) {
+                return in_array($company->id, $mentorCompanyIds);
+            })->map(function ($company) use ($user) {
+                $internDate = $user->internDates->where('company_id', $company->id)->first();
+                return [
+                    'id' => $company->id,
+                    'name' => $company->name,
+                    'start_date' => $internDate?->start_date,
+                    'end_date' => $internDate?->end_date,
+                    'extend' => $internDate?->extend,
+                    'finished' => $internDate?->finished,
+                ];
+            });
+        } else {
+            $companiesData = $user->companies->map(function ($company) use ($user) {
+                $internDate = $user->internDates->where('company_id', $company->id)->first();
+                return [
+                    'id' => $company->id,
+                    'name' => $company->name,
+                    'start_date' => $internDate?->start_date,
+                    'end_date' => $internDate?->end_date,
+                    'extend' => $internDate?->extend,
+                    'finished' => $internDate?->finished,
+                ];
+            });
+        }
 
         if ($user) {
             $courses = Course::where('department_id', $user->departments()->first()->id)->pluck('name', 'id');
