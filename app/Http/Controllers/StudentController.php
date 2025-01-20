@@ -213,6 +213,22 @@ class StudentController extends Controller
                 foreach ($request->companies as $companyId => $data) {
                     $company = Company::find($companyId);
                     if ($company) {
+                        $startDate = Carbon::parse($data['start_date']);
+                        $endDate = Carbon::parse($data['end_date']);
+
+                        $overlapCheck = $user->internDates()->where('company_id', '!=', $companyId)
+                        ->where(function ($query) use ($startDate, $endDate) {
+                            $query->whereBetween('start_date', [$startDate, $endDate])
+                                ->orWhereBetween('end_date', [$startDate, $endDate])
+                                ->orWhere(function ($query) use ($startDate, $endDate) {
+                                    $query->where('start_date', '<=', $startDate)
+                                          ->where('end_date', '>=', $endDate);
+                                });
+                        })->exists();
+
+                        if ($overlapCheck) {
+                            return back()->with('error', 'Tanggal yang dipilih tidak sesuai.');
+                        }
                         $user->internDates()->updateOrCreate(
                             ['company_id' => $companyId],
                             [
@@ -224,8 +240,6 @@ class StudentController extends Controller
                         );
 
                         $presencePending = PresenceStatus::where('name', 'Pending')->first('id')->id;
-                        $startDate = Carbon::parse($data['start_date']);
-                        $endDate = Carbon::parse($data['end_date']);
 
                         for ($i = $startDate; $i <= $endDate; $i->addDay()) {
                             $presence = $user->presences()->where('company_id', $companyId)->where('date', $i)->first();
