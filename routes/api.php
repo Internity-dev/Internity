@@ -62,7 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource('journals', JournalController::class)->except(['create', 'edit']);
 
-    Route::post('export-journal', [ExportController::class, 'exportJournal']);
+    Route::post('export-journal/{id}', [ExportController::class, 'exportJournal']);
 
     Route::get('/today-activities', [PresenceController::class, 'todayActivity']);
     Route::resource('presences', PresenceController::class)->except(['create', 'edit']);

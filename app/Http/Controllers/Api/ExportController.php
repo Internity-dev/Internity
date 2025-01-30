@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
-    public function exportJournal(Request $request)
+    public function exportJournal(Request $request, $id)
     {
         $user = auth()->user();
         $courseName = $user->courses->first()?->name;
@@ -26,9 +26,11 @@ class ExportController extends Controller
             'female' => 'Perempuan'
         };
 
-        $companyId = $request->query('company', $user->companies->first()->id);
-
+        $companyId = $id;
         $company = $user->companies()->find($companyId);
+        if (!$company) {
+            return response()->json(['error' => 'Company not found!'], 404);
+        }
         $companyName = $company?->name ?? 'N/A';
 
         $presences = $user->presences()
@@ -39,6 +41,10 @@ class ExportController extends Controller
             ->filter(fn($presence) => !is_null($presence->check_in))
             ->values();
 
+        if ($presences->isEmpty()) {
+            return response()->json(['error' => 'No presences found!'], 404);
+        }
+
         $journals = $user->journals()
             ->where('company_id', $companyId)
             ->whereDate('date', '<=', Carbon::now())
@@ -46,6 +52,10 @@ class ExportController extends Controller
             ->get()
             ->filter(fn($journal) => !is_null($journal->work_type))
             ->values();
+        
+        if ($journals->isEmpty()) {
+            return response()->json(['error' => 'No journals found!'], 404);
+        }
 
         $formFields = [
             'namasiswa' => $user->name,
