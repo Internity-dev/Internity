@@ -14,6 +14,7 @@ class Score extends Model
         'company_id',
         'name',
         'score',
+        'type',
     ];
 
     protected $appends = [

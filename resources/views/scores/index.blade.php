@@ -14,6 +14,9 @@
                 Subyek
             </th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-20">
+                Tipe
+            </th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-20">
                 Nilai
             </th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-20">
@@ -41,6 +44,7 @@
                         @endcan
                     </td>
                     <td class="text-sm text-center">{{ $data->name }}</td>
+                    <td class="text-sm text-center">{{ $data->type === 'teknis' ? 'Teknis' : 'Non Teknis' }}</td>
                     <td class="text-sm text-center">{{ $data->score }}</td>
                     <td class="text-sm text-center">
                         <span class="badge badge-sm" style="background-color: {{ $data->score_predicate->color }}">

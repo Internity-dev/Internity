@@ -89,6 +89,7 @@ class ScoreController extends Controller
             'company_id' => 'required|exists:companies,id',
             'name' => 'required',
             'score' => 'required|integer',
+            'type' => 'required|in:teknis,non-teknis'
         ]);
 
         Score::create($request->all());
@@ -165,12 +166,14 @@ class ScoreController extends Controller
         $request->validate([
             'name' => 'required',
             'score' => 'required|integer',
+            'type' => 'required|in:teknis,non-teknis'
         ]);
 
         $score = Score::find($id);
         $score->update([
             'name' => $request->name,
             'score' => $request->score,
+            'type' => $request->type,
         ]);
 
         return redirect()->route('scores.index', ['user' => encrypt($score->user_id), 'company' => encrypt($score->company_id)]);
