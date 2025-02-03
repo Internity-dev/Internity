@@ -73,6 +73,27 @@ class ApplianceController extends Controller
 
         $user = auth()->user();
 
+        // Parse the start and end date
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
+
+        // Check if the start and end dates overlap with any other company's internship dates
+        $overlapCheck = $user->internDates()->where('company_id', '!=', $id)
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('start_date', [$startDate, $endDate])
+                    ->orWhereBetween('end_date', [$startDate, $endDate])
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query->where('start_date', '<=', $startDate)
+                                ->where('end_date', '>=', $endDate);
+                    });
+            })->exists();
+
+        if ($overlapCheck) {
+            return response()->json([
+                'message' => 'The selected dates overlap with another company\'s internship dates.',
+            ], 400);
+        }
+
         try {
             $user->internDates()->where('company_id', $id)->update($request->all());
 

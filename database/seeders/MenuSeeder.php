@@ -69,7 +69,7 @@ class MenuSeeder extends Seeder
                 'url' => 'news?category=school&school=' . encrypt($school->id),
                 'status' => 1,
                 'order' => 31,
-                'parent_id' => 4,
+                'parent_id' => 5,
                 'permission_id' => Permission::where('name', 'news-list')->first()->id,
             ],
             [
@@ -78,7 +78,7 @@ class MenuSeeder extends Seeder
                 'url' => 'news?category=department&school=' . encrypt($school->id),
                 'status' => 1,
                 'order' => 32,
-                'parent_id' => 4,
+                'parent_id' => 5,
                 'permission_id' => Permission::where('name', 'news-list')->first()->id,
             ],
             [

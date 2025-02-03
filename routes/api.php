@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\JournalController;
@@ -60,6 +61,8 @@ Route::middleware('auth:sanctum')->group(function () {
     ]);
 
     Route::resource('journals', JournalController::class)->except(['create', 'edit']);
+
+    Route::post('export-journal/{id}', [ExportController::class, 'exportJournal']);
 
     Route::get('/today-activities', [PresenceController::class, 'todayActivity']);
     Route::resource('presences', PresenceController::class)->except(['create', 'edit']);
