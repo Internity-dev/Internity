@@ -61,21 +61,35 @@ class ExportController extends Controller
             return response()->json(['error' => 'No journals found!'], 404);
         }
 
+        $parentAddress =  $request->input('parent_address') ?? $user->address;
+        $directors = $request->input('directors', []);
+        $hrds = $request->input('hrds', []);
+        $schoolMentors = $request->input('school_mentors', []);
+        $companyMentors = $request->input('company_mentors', []);
+
         $formFields = [
-            'namasiswa' => $user->name,
+           'namasiswa' => $user->name,
             'kelas' => $courseLevel,
+            'nis' => $request->input('nis'),
+            'nis_nisn' => $request->input('nis') . '/' . $request->input('nisn'),
+            'gol_darah' => $request->input('blood_type'),
             'alamat_siswa' => $user->address,
             'jurusan' => $user->departments->first()?->description,
             'kelasjurusan' => $courseName,
             'ttl' => $formattedDateOfBirth,
             'gender' => $gender,
+            'namaortu' =>  $request->input('parent_name'),
+            'alamat_ortu' => $parentAddress,
             'tgl_export' => Carbon::now()->translatedFormat('l, j F Y'),
             'instansi_nama' => $company->name,
             'instansi_bidang' => $company->category,
             'instansi_alamat' => $company->address,
-            'instansi_hrd' => $company->contact_person,
             'instansi_tglmulai' => $startDate,
             'instansi_tglselesai' => $endDate,
+            'instansi_direktur' => $directors[0]['name'] ?? 'N/A',
+            'instansi_hrd' => $hrds[0]['name'] ?? 'N/A',
+            'instansi_psekolah' => $schoolMentors[0]['name'] ?? 'N/A',
+            'instansi_piduka' => $companyMentors[0]['name'] ?? 'N/A',
         ];
 
         foreach ($presences as $index => $presence) {
@@ -128,99 +142,77 @@ class ExportController extends Controller
             'female' => 'Perempuan'
         };
     
-        $companies = $user->companies()->take(2)->get();
+        $parentAddress =  $request->input('parent_address') ?? $user->address;
     
-        if ($companies->count() < 2) {
-            return response()->json(['error' => 'Insufficient companies associated with the user!'], 404);
+        $companies = $user->companies;
+    
+        if ($companies->isEmpty()) {
+            return response()->json(['error' => 'No companies associated with the user!'], 404);
         }
-    
-        $company1 = $companies[0];
-        $company2 = $companies[1];
-    
-        $presences1 = $user->presences()
-            ->where('company_id', $company1->id)
-            ->whereDate('date', '<=', Carbon::now())
-            ->orderBy('date', 'asc')
-            ->get()
-            ->filter(fn($presence) => !is_null($presence->check_in))
-            ->values();
-    
-        $journals1 = $user->journals()
-            ->where('company_id', $company1->id)
-            ->whereDate('date', '<=', Carbon::now())
-            ->orderBy('date', 'asc')
-            ->get()
-            ->filter(fn($journal) => !is_null($journal->work_type))
-            ->values();
-    
-        $presences2 = $user->presences()
-            ->where('company_id', $company2->id)
-            ->whereDate('date', '<=', Carbon::now())
-            ->orderBy('date', 'asc')
-            ->get()
-            ->filter(fn($presence) => !is_null($presence->check_in))
-            ->values();
-    
-        $journals2 = $user->journals()
-            ->where('company_id', $company2->id)
-            ->whereDate('date', '<=', Carbon::now())
-            ->orderBy('date', 'asc')
-            ->get()
-            ->filter(fn($journal) => !is_null($journal->work_type))
-            ->values();
     
         $formFields = [
             'namasiswa' => $user->name,
             'kelas' => $courseLevel,
+            'nis' => $request->input('nis'),
+            'nis_nisn' => $request->input('nis') . '/' . $request->input('nisn'),
+            'gol_darah' => $request->input('blood_type'),
             'alamat_siswa' => $user->address,
             'jurusan' => $user->departments->first()?->description,
             'kelasjurusan' => $courseName,
             'ttl' => $formattedDateOfBirth,
             'gender' => $gender,
+            'namaortu' =>  $request->input('parent_name'),
+            'alamat_ortu' => $parentAddress,
             'tgl_export' => Carbon::now()->translatedFormat('l, j F Y'),
-            'instansi1_nama' => $company1->name,
-            'instansi1_bidang' => $company1->category,
-            'instansi1_alamat' => $company1->address,
-            'instansi1_hrd' => $company1->contact_person,
-            'instansi1_tglmulai' => Carbon::parse($company1->internDates->first()->start_date)->translatedFormat('j F Y'),
-            'instansi1_tglselesai' => Carbon::parse($company1->internDates->first()->end_date)->translatedFormat('j F Y'),
         ];
+
+        $directors = $request->input('directors', []);
+        $hrds = $request->input('hrds', []);
+        $school_mentors = $request->input('school_mentors', []);
+        $company_mentors = $request->input('company_mentors', []);
     
-        foreach ($presences1 as $index => $presence) {
-            $i = $index + 1;
-            $formFields["1_tanggal$i"] = Carbon::parse($presence->date)->translatedFormat('l, j F Y');
-            $formFields["1_checkin$i"] = $presence->check_in;
-            $formFields["1_checkout$i"] = $presence->check_out ?? 'N/A';
-        }
-    
-        foreach ($journals1 as $index => $journal) {
-            $i = $index + 1;
-            $formFields["1_no$i"] = $i;
-            $formFields["1_bidang$i"] = $journal->work_type;
-            $formFields["1_uraian$i"] = $journal->description;
-            $formFields["1_tgl_jurnal$i"] = Carbon::parse($journal->date)->translatedFormat('l, j F Y');
-        }
-    
-        $formFields['instansi2_nama'] = $company2->name;
-        $formFields['instansi2_bidang'] = $company2->category;
-        $formFields['instansi2_alamat'] = $company2->address;
-        $formFields['instansi2_hrd'] = $company2->contact_person;
-        $formFields['instansi2_tglmulai'] = Carbon::parse($company2->internDates->first()->start_date)->translatedFormat('j F Y');
-        $formFields['instansi2_tglselesai'] = Carbon::parse($company2->internDates->first()->end_date)->translatedFormat('j F Y');
-    
-        foreach ($presences2 as $index => $presence) {
-            $i = $index + 1;
-            $formFields["2_tanggal$i"] = Carbon::parse($presence->date)->translatedFormat('l, j F Y');
-            $formFields["2_checkin$i"] = $presence->check_in;
-            $formFields["2_checkout$i"] = $presence->check_out ?? 'N/A';
-        }
-    
-        foreach ($journals2 as $index => $journal) {
-            $i = $index + 1;
-            $formFields["2_no$i"] = $i;
-            $formFields["2_bidang$i"] = $journal->work_type;
-            $formFields["2_uraian$i"] = $journal->description;
-            $formFields["2_tgl_jurnal$i"] = Carbon::parse($journal->date)->translatedFormat('l, j F Y');
+        foreach ($companies as $index => $company) {
+            $companyIndex = $index + 1;
+            
+            $formFields["instansi{$companyIndex}_nama"] = $company->name;
+            $formFields["instansi{$companyIndex}_bidang"] = $company->category;
+            $formFields["instansi{$companyIndex}_alamat"] = $company->address;
+            $formFields["instansi{$companyIndex}_hrd"] = $company->contact_person;
+            $formFields["instansi{$companyIndex}_tglmulai"] = Carbon::parse($company->internDates->first()->start_date)->translatedFormat('j F Y');
+            $formFields["instansi{$companyIndex}_tglselesai"] = Carbon::parse($company->internDates->first()->end_date)->translatedFormat('j F Y');
+            $formFields["instansi{$companyIndex}_direktur"] = $directors[$index]['name'] ?? 'N/A';
+            $formFields["instansi{$companyIndex}_hrd"] = $hrds[$index]['name'] ?? 'N/A';
+            $formFields["instansi{$companyIndex}_psekolah"] = $school_mentors[$index]['name'] ?? 'N/A';
+            $formFields["instansi{$companyIndex}_piduka"] = $company_mentors[$index]['name'] ?? 'N/A';
+
+            $presences = $user->presences()
+                ->where('company_id', $company->id)
+                ->whereDate('date', '<=', Carbon::now())
+                ->orderBy('date', 'asc')
+                ->get()
+                ->filter(fn($presence) => !is_null($presence->check_in))
+                ->values();
+            
+            foreach ($presences as $presenceIndex => $presence) {
+                $formFields["{$companyIndex}_tanggal" . ($presenceIndex + 1)] = Carbon::parse($presence->date)->translatedFormat('l, j F Y');
+                $formFields["{$companyIndex}_checkin" . ($presenceIndex + 1)] = $presence->check_in;
+                $formFields["{$companyIndex}_checkout" . ($presenceIndex + 1)] = $presence->check_out ?? 'N/A';
+            }
+            
+            $journals = $user->journals()
+                ->where('company_id', $company->id)
+                ->whereDate('date', '<=', Carbon::now())
+                ->orderBy('date', 'asc')
+                ->get()
+                ->filter(fn($journal) => !is_null($journal->work_type))
+                ->values();
+            
+            foreach ($journals as $journalIndex => $journal) {
+                $formFields["{$companyIndex}_no" . ($journalIndex + 1)] = $journalIndex + 1;
+                $formFields["{$companyIndex}_bidang" . ($journalIndex + 1)] = $journal->work_type;
+                $formFields["{$companyIndex}_uraian" . ($journalIndex + 1)] = $journal->description;
+                $formFields["{$companyIndex}_tgl_jurnal" . ($journalIndex + 1)] = Carbon::parse($journal->date)->translatedFormat('l, j F Y');
+            }
         }
     
         $templatePath = public_path('template-pdf/template_2-company.pdf');
@@ -236,4 +228,5 @@ class ExportController extends Controller
     
         return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
     }
+    
 }
