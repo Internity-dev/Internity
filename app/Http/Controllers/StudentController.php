@@ -239,6 +239,14 @@ class StudentController extends Controller
                             ]
                         );
 
+                        $user->presences()->where('company_id', $companyId)
+                            ->where('date', '>', $endDate)
+                            ->delete();
+
+                        $user->journals()->where('company_id', $companyId)
+                            ->where('date', '>', $endDate)
+                            ->delete();
+
                         $presencePending = PresenceStatus::where('name', 'Pending')->first('id')->id;
 
                         for ($i = $startDate; $i <= $endDate; $i->addDay()) {
