@@ -1,3 +1,15 @@
+@php
+use Carbon\Carbon;
+
+$currentDate = Carbon::now();
+$currentYear = $currentDate->year;
+
+if ($currentDate->month >= 6 && $currentDate->month <= 12) {
+    $defaultAcademicYear = $currentYear . '-' . ($currentYear + 1);
+} else {
+    $defaultAcademicYear = ($currentYear - 1) . '-' . $currentYear;
+}
+@endphp
 <div class="row">
     <div class="col-12">
         <div class="card mb-4">
@@ -33,21 +45,46 @@
                         </a>
                     @endif
                     </div>
-                    <!-- Add data End -->
+                    <div class="d-flex align-items-center">
+                    @if (request()->is('students'))
+                        <div class="me-3">
+                            @php
+                                $selectedAcademicYear = request()->query('academic_year', $defaultAcademicYear);
+                            @endphp
 
-                    {{-- Filter Start --}}
-                    @if (!empty($filter))
-                        {{ $dropdown }}
+                            <select id="academicYearSelect" style="width: 120px;" class="form-select" aria-label="Pilih Angkatan" onchange="window.location.href=this.value">
+                                @php
+                                    $startYear = 2023;
+                                    $endYear = $currentYear + 1;
+                                @endphp
+                                @for ($year = $startYear; $year <= $endYear; $year++)
+                                    @php
+                                        $academicYear = $year . '-' . ($year + 1);
+                                    @endphp
+                                    <option value="{{ request()->fullUrlWithQuery(['academic_year' => $academicYear]) }}" {{ $academicYear == $selectedAcademicYear ? 'selected' : '' }}>
+                                        {{ $academicYear }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
                     @endif
-                    {{-- Filter end --}}
 
-                    <div class="card-header p-0">
-                        <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                            <div class="input-group">
-                                <span class="input-group-text text-body">
-                                    <i class="bi bi-search"></i>
-                                </span>
-                                <input type="text" class="form-control search" placeholder="Cari..." name="search" id="search-input">
+                        <!-- Add data End -->
+
+                        {{-- Filter Start --}}
+                        @if (!empty($filter))
+                            {{ $dropdown }}
+                        @endif
+                        {{-- Filter end --}}
+
+                        <div class="card-header p-0">
+                            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                                <div class="input-group">
+                                    <span class="input-group-text text-body">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" class="form-control search" placeholder="Cari..." name="search" id="search-input">
+                                </div>
                             </div>
                         </div>
                     </div>
