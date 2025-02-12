@@ -19,7 +19,7 @@ class VacancyController extends Controller
         try {
             $vacancies = Vacancy::whereHas('company', function ($query) use ($departmentId) {
                 $query->where('department_id', $departmentId);
-            })->orderBy('updated_at', 'desc')->get();
+            })->where('status', 1)->orderBy('updated_at', 'desc')->get();
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
@@ -49,7 +49,7 @@ class VacancyController extends Controller
                     $query->whereHas('company', function ($query) use ($departmentId) {
                         $query->where('department_id', $departmentId);
                     });
-                })->get();
+                })->where('status', 1)->get();
 
                 $vacancies = array_merge($vacancies, $vacancy->toArray());
             }
@@ -81,7 +81,7 @@ class VacancyController extends Controller
                     });
             })->whereHas('company', function ($query) use ($departmentId) {
                 $query->where('department_id', $departmentId);
-            })->orderBy('updated_at', 'desc')->get();
+            })->orderBy('updated_at', 'desc')->where('status', 1)->get();
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
@@ -135,7 +135,7 @@ class VacancyController extends Controller
     public function show($id)
     {
         try {
-            $vacancy = Vacancy::findOrFail($id);
+            $vacancy = Vacancy::findOrFail($id)->where('status', 1);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
