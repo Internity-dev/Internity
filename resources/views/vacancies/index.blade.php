@@ -30,6 +30,9 @@
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-5">
                 Pendaftar
             </th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15">
+                Status
+            </th>
         </x-slot:thead>
 
         <x-slot:tbody>
@@ -71,7 +74,7 @@
                         </ul>
                     </td>
                     <td class="text-sm">
-                        <input type="hidden" id="rich-read-{{ $data->id }}" value="{!! $data->description !!}" />
+                        <input type="hidden" id="rich-read-{{ $data->id }}" value="{!! substr($data->description, 0, 100) . (strlen($data->description) > 100 ? '...' : '') !!}" />
                         <div id="blank-toolbar" hidden></div>
                         <trix-editor contenteditable=false toolbar="blank-toolbar" class="trix-content"
                             input="rich-read-{{ $data->id }}">
@@ -79,6 +82,10 @@
                     </td>
                     <td class="text-sm text-center">{{ $data->slots }}</td>
                     <td class="text-sm text-center">{{ $data->applied }}</td>
+                    <td class="text-sm text-center">
+                        <span
+                            class="badge badge-sm bg-gradient-{{ $data->status == 1 ? 'success' : 'danger' }}">{{ $data->status == 1 ? 'Aktif' : 'Nonaktif' }}</span>
+                    </td>
                 </tr>
             @endforeach
         </x-slot:tbody>
