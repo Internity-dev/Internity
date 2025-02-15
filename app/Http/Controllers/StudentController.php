@@ -122,6 +122,17 @@ class StudentController extends Controller
 
         $sort = $sort ? $sort : 'name';
 
+        $currentDate = Carbon::now();
+        $currentYear = $currentDate->year;
+
+        if ($currentDate->month >= 5 && $currentDate->month <= 12) {
+            $defaultAcademicYear = $currentYear . '-' . ($currentYear + 1);
+        } else {
+            $defaultAcademicYear = ($currentYear - 1) . '-' . $currentYear;
+        }
+
+        $academicYear = $academicYear ? $academicYear : $defaultAcademicYear;
+
         $context = $this->getData($search, $status, $school, $department, $sort, $academicYear);
 
         return $context['status']
