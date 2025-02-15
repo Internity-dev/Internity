@@ -18,75 +18,81 @@ if ($currentDate->month >= 6 && $currentDate->month <= 12) {
 
                 {{-- Table Function --}}
                 <div
-                    class="header-function d-flex align-items-center  @if ($routeCreate) justify-content-between @else justify-content-end @endif">
+                    class="header-function d-flex align-items-center justify-content-between">
                     <!-- Add data Start -->
                     <div>
-                    @if ($routeCreate)
-                        <a href="{{ $routeCreate }}" class="btn bg-gradient-info mb-0">
-                            TAMBAH DATA
-                        </a>
-                    @endif
-
-                    @if (auth()->user()->name === 'Superadmin' && request()->is('students'))
-                        <a href="{{ route('students.export', request()->query()) }}" class="btn bg-gradient-success mb-0">
-                            CETAK DATA
-                        </a>
-                    @endif
-
-                    @if (request()->is('presences'))
-                        <a href="{{ route('presences.bulkApprove', request()->query()) }}" class="btn bg-gradient-success mb-0" id="approve-all-presences">
-                            APPROVE ALL
-                        </a>
-                    @endif
-
-                    @if (request()->is('journals'))
-                        <a href="{{ route('journals.bulkApprove', request()->query()) }}" class="btn bg-gradient-success mb-0" id="approve-all-journals">
-                            APPROVE ALL
-                        </a>
-                    @endif
-                    </div>
-                    <div class="d-flex align-items-center">
-                    @if (request()->is('students'))
-                        <div class="me-3">
-                            @php
-                                $selectedAcademicYear = request()->query('academic_year', $defaultAcademicYear);
-                            @endphp
-
-                            <select id="academicYearSelect" style="width: 120px;" class="form-select" aria-label="Pilih Angkatan" onchange="window.location.href=this.value">
-                                @php
-                                    $startYear = 2023;
-                                    $endYear = $currentYear + 1;
-                                @endphp
-                                @for ($year = $startYear; $year <= $endYear; $year++)
-                                    @php
-                                        $academicYear = $year . '-' . ($year + 1);
-                                    @endphp
-                                    <option value="{{ request()->fullUrlWithQuery(['academic_year' => $academicYear]) }}" {{ $academicYear == $selectedAcademicYear ? 'selected' : '' }}>
-                                        {{ $academicYear }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                    @endif
-
-                        <!-- Add data End -->
-
-                        {{-- Filter Start --}}
-                        @if (!empty($filter))
-                            {{ $dropdown }}
+                        @if ($routeCreate)
+                            <a href="{{ $routeCreate }}" class="btn bg-gradient-info mb-0">
+                                TAMBAH DATA
+                            </a>
                         @endif
-                        {{-- Filter end --}}
 
-                        <div class="card-header p-0">
-                            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                                <div class="input-group">
-                                    <span class="input-group-text text-body">
-                                        <i class="bi bi-search"></i>
-                                    </span>
-                                    <input type="text" class="form-control search" placeholder="Cari..." name="search" id="search-input">
+                        @if (auth()->user()->name === 'Superadmin' && request()->is('students'))
+                            <a href="{{ route('students.export', request()->query()) }}" class="btn bg-gradient-success mb-0">
+                                CETAK DATA
+                            </a>
+                        @endif
+
+                        @if (request()->is('presences'))
+                            <a href="{{ route('presences.bulkApprove', request()->query()) }}" class="btn bg-gradient-success mb-0" id="approve-all-presences">
+                                APPROVE ALL
+                            </a>
+                        @endif
+
+                        @if (auth()->user()->name === 'Superadmin' && request()->is('presences'))
+                            <a href="{{ route('presences.export', request()->query()) }}" class="btn bg-gradient-info mb-0">
+                                CETAK DATA
+                            </a>
+                        @endif
+
+                        @if (request()->is('journals'))
+                            <a href="{{ route('journals.bulkApprove', request()->query()) }}" class="btn bg-gradient-success mb-0" id="approve-all-journals">
+                                APPROVE ALL
+                            </a>
+                        @endif
+                        </div>
+                        <div class="d-flex align-items-center">
+                        @if (request()->is('students'))
+                            <div class="me-3">
+                                @php
+                                    $selectedAcademicYear = request()->query('academic_year', $defaultAcademicYear);
+                                @endphp
+
+                                <select id="academicYearSelect" style="width: 120px;" class="form-select" aria-label="Pilih Angkatan" onchange="window.location.href=this.value">
+                                    @php
+                                        $startYear = 2023;
+                                        $endYear = $currentYear + 1;
+                                    @endphp
+                                    @for ($year = $startYear; $year <= $endYear; $year++)
+                                        @php
+                                            $academicYear = $year . '-' . ($year + 1);
+                                        @endphp
+                                        <option value="{{ request()->fullUrlWithQuery(['academic_year' => $academicYear]) }}" {{ $academicYear == $selectedAcademicYear ? 'selected' : '' }}>
+                                            {{ $academicYear }}
+                                        </option>
+                                    @endfor
+                                </select>
+                            </div>
+                        @endif
+
+                            <!-- Add data End -->
+
+                            {{-- Filter Start --}}
+                            @if (!empty($filter))
+                                {{ $dropdown }}
+                            @endif
+                            {{-- Filter end --}}
+
+                            <div class="card-header p-0">
+                                <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                                    <div class="input-group">
+                                        <span class="input-group-text text-body">
+                                            <i class="bi bi-search"></i>
+                                        </span>
+                                        <input type="text" class="form-control search" placeholder="Cari..." name="search" id="search-input">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
