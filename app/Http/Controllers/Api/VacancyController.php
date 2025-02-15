@@ -135,7 +135,7 @@ class VacancyController extends Controller
     public function show($id)
     {
         try {
-            $vacancy = Vacancy::findOrFail($id)->where('status', 1);
+            $vacancy = Vacancy::where('id', $id)->where('status', 1)->firstOrFail();
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
