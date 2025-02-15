@@ -125,19 +125,19 @@ class FaqController extends Controller
         ]);
 
         $faq = Faq::find(decrypt($id));
-        $oldAnswer = $faq->answer; // save old answer
-        
+        $oldAnswer = $faq->answer;
+
         $answer = $this->saveContentImages($request->answer);
-    
+
         $faq->update([
             'question' => $request->question,
             'answer' => $answer
         ]);
-    
+
         $this->deleteUnusedImages($oldAnswer, $answer);
-    
+
         return redirect()->route('faqs.index')->with('success', 'FAQ berhasil diperbarui');
-    }    
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -156,67 +156,66 @@ class FaqController extends Controller
         $dom = new DOMDocument();
         libxml_use_internal_errors(true);
         $dom->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-    
+
         $images = $dom->getElementsByTagName('img');
-    
+
         foreach ($images as $key => $img) {
             $src = $img->getAttribute('src');
-    
+
             // Jika gambar adalah base64 (gambar baru diupload)
             if (strpos($src, 'data:image') === 0) {
                 $data = base64_decode(explode(',', explode(';', $src)[1])[1]);
-                $image_name = 'uploads/' . time() . $key . '.png';
-                Storage::disk('public')->put($image_name, $data);
-    
+                $image_name = '/uploads/' . time() . $key . '.png';
+                file_put_contents(public_path($image_name), $data);
+
                 $img->removeAttribute('src');
-                $img->setAttribute('src', Storage::url($image_name)); // Simpan URL lengkap
+                $img->setAttribute('src', $image_name);
             }
         }
-    
+
         return $dom->saveHTML();
     }
-    
+
+
     private function deleteUnusedImages($oldAnswer, $used_images)
     {
         if (!is_array($used_images)) {
             $used_images = [$used_images];
         }
-    
         $dom = new DOMDocument();
         libxml_use_internal_errors(true);
         $dom->loadHTML($oldAnswer, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-    
+
         $oldImages = $dom->getElementsByTagName('img');
         $old_image_paths = [];
-    
+
         foreach ($oldImages as $img) {
-            $src = $img->getAttribute('src');
-            $old_image_paths[] = str_replace(url('storage/'), '', $src); // Hapus URL base
+            $old_image_paths[] = $img->getAttribute('src');
         }
-    
+
         foreach ($old_image_paths as $old_image) {
-            if (!in_array(url('storage/' . $old_image), $used_images)) {
-                if (Storage::disk('public')->exists($old_image)) {
-                    Storage::disk('public')->delete($old_image);
+            if (!in_array($old_image, $used_images)) {
+                if (file_exists(public_path($old_image))) {
+                    unlink(public_path($old_image));
                 }
             }
         }
     }
-    
+
     private function deleteImages($answer)
     {
         $dom = new DOMDocument();
-        libxml_use_internal_errors(true); 
+        libxml_use_internal_errors(true);
         $dom->loadHTML($answer, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-    
+
         $images = $dom->getElementsByTagName('img');
-    
+
         foreach ($images as $img) {
             $src = $img->getAttribute('src');
-            $image_path = str_replace(url('storage/'), '', $src); // Hapus URL base
-    
-            if (Storage::disk('public')->exists($image_path)) {
-                Storage::disk('public')->delete($image_path);
+            $image_path = public_path($src);
+
+            if (file_exists($image_path)) {
+                unlink($image_path);
             }
         }
     }
