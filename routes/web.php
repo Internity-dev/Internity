@@ -25,6 +25,7 @@ use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\PresenceStatusController;
 use App\Http\Controllers\ScorePredicateController;
 use App\Exports\StudentsExport;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\TeacherController;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
@@ -125,4 +126,6 @@ Route::middleware(['auth'])->group( function () {
 
     Route::get('edit-profile', [UserController::class, 'editProfile'])->name('users.editProfile');
     Route::put('update-profile', [UserController::class, 'updateProfile'])->name('users.updateProfile');
+
+    Route::resource('faqs', FaqController::class);
 });
