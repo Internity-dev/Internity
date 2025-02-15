@@ -122,7 +122,11 @@ class ExportController extends Controller
         $tempPath = storage_path('storage/journals/' . $fileName);
         $outputPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
         $pdf = new Pdf($templatePath);
-        $pdf->fillForm($formFields)->flatten()->saveAs($outputPath);
+        $result = $pdf->fillForm($formFields)->flatten()->saveAs($outputPath);
+        if (!$result) {
+            $error = $pdf->getError();
+            return response()->json(['error' => 'Failed to generate PDF: ' . $error], 500);
+        }
 
         return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
     }
@@ -224,7 +228,11 @@ class ExportController extends Controller
         $tempPath = storage_path('storage/journals/' . $fileName);
         $outputPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
         $pdf = new Pdf($templatePath);
-        $pdf->fillForm($formFields)->flatten()->saveAs($outputPath);
+        $result = $pdf->fillForm($formFields)->flatten()->saveAs($outputPath);
+        if (!$result) {
+            $error = $pdf->getError();
+            return response()->json(['error' => 'Failed to generate PDF: ' . $error], 500);
+        }
     
         return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
     }
