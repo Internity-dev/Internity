@@ -101,11 +101,11 @@ Route::middleware(['auth'])->group( function () {
 
     Route::resource('journals', JournalController::class)->except('create', 'store');
     Route::put('journals/{id}/approve', [JournalController::class, 'approve'])->name('journals.approve');
-    Route::put('/journals/bulk-approve', [JournalController::class, 'bulkApprove'])->name('journals.bulkApprove');
+    Route::get('/bulk-journals', [JournalController::class, 'bulkApprove'])->name('journals.bulkApprove');
 
     Route::resource('presences', PresenceController::class)->only('index', 'destroy');
     Route::put('presences/{id}/approve', [PresenceController::class, 'approve'])->name('presences.approve');
-    Route::put('/presences/bulk-approve', [PresenceController::class, 'bulkApprove'])->name('presences.bulkApprove');
+    Route::get('/bulk-presences', [PresenceController::class, 'bulkApprove'])->name('presences.bulkApprove');
     Route::get('/presences/export', function (Request $request) {
         return Excel::download(new PresenceExport($request), 'presences.xlsx');
     })->name('presences.export');
