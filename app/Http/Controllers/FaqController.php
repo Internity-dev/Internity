@@ -165,11 +165,11 @@ class FaqController extends Controller
             // Jika gambar adalah base64 (gambar baru diupload)
             if (strpos($src, 'data:image') === 0) {
                 $data = base64_decode(explode(',', explode(';', $src)[1])[1]);
-                $image_name = '/uploads/' . time() . $key . '.png';
+                $image_name = 'uploads/' . time() . $key . '.png';
                 file_put_contents(public_path($image_name), $data);
 
                 $img->removeAttribute('src');
-                $img->setAttribute('src', $image_name);
+                $img->setAttribute('src', env('APP_URL') . $image_name);
             }
         }
 
@@ -194,9 +194,12 @@ class FaqController extends Controller
         }
 
         foreach ($old_image_paths as $old_image) {
+            $old_image = trim($old_image);
             if (!in_array($old_image, $used_images)) {
-                if (file_exists(public_path($old_image))) {
-                    unlink(public_path($old_image));
+                $old_image_path = public_path($old_image);
+
+                if (file_exists($old_image_path)) {
+                    unlink($old_image_path);
                 }
             }
         }

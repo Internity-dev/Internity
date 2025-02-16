@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\JournalController;
 use App\Http\Controllers\Api\VacancyController;
 use App\Http\Controllers\Api\PresenceController;
 use App\Http\Controllers\Api\ApplianceController;
+use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PresenceStatusController;
 use App\Http\Controllers\Api\SavedVacancyController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\Api\SavedVacancyController;
 Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
+    Route::resource('/faqs', FaqController::class)->only('index');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
