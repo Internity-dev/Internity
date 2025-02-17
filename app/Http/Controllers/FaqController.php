@@ -111,6 +111,7 @@ class FaqController extends Controller
     {
         $id = decrypt($id);
         $faq = Faq::findOrFail($id);
+        // dd($faq);
         return view('faqs.edit', compact('faq'));
     }
 
@@ -128,6 +129,7 @@ class FaqController extends Controller
         $oldAnswer = $faq->answer;
 
         $answer = $this->saveContentImages($request->answer);
+        // dd($answer, $oldAnswer);
 
         $faq->update([
             'question' => $request->question,
@@ -165,11 +167,11 @@ class FaqController extends Controller
             // Jika gambar adalah base64 (gambar baru diupload)
             if (strpos($src, 'data:image') === 0) {
                 $data = base64_decode(explode(',', explode(';', $src)[1])[1]);
-                $image_name = 'uploads/' . time() . $key . '.png';
+                $image_name = '/uploads/' . time() . $key . '.png';
                 file_put_contents(public_path($image_name), $data);
 
                 $img->removeAttribute('src');
-                $img->setAttribute('src', env('APP_URL') . $image_name);
+                $img->setAttribute('src', env('ASSET_URL') . $image_name);
             }
         }
 
@@ -182,31 +184,50 @@ class FaqController extends Controller
         if (!is_array($used_images)) {
             $used_images = [$used_images];
         }
+    
+        $domain = env('ASSET_URL');
         $dom = new DOMDocument();
         libxml_use_internal_errors(true);
         $dom->loadHTML($oldAnswer, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
+    
         $oldImages = $dom->getElementsByTagName('img');
         $old_image_paths = [];
-
+    
         foreach ($oldImages as $img) {
-            $old_image_paths[] = $img->getAttribute('src');
+            $old_image = $img->getAttribute('src');
+            if (empty($old_image)) {
+                continue;
+            }
+            $old_image_paths[] = $old_image;
         }
-
+    
+        $domUsedImages = new DOMDocument();
+        $domUsedImages->loadHTML(implode("", $used_images), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $usedImagePaths = [];
+    
+        $usedImages = $domUsedImages->getElementsByTagName('img');
+        foreach ($usedImages as $img) {
+            $usedImagePaths[] = $img->getAttribute('src');
+        }
+    
         foreach ($old_image_paths as $old_image) {
-            $old_image = trim($old_image);
-            if (!in_array($old_image, $used_images)) {
+            // dd(in_array($old_image, $usedImagePaths));
+            if (!in_array($old_image, $usedImagePaths)) {
+                if (strpos($old_image, $domain) === 0) {
+                    $old_image = str_replace($domain, '', $old_image);
+                }
                 $old_image_path = public_path($old_image);
-
+    
                 if (file_exists($old_image_path)) {
                     unlink($old_image_path);
                 }
             }
         }
     }
-
+    
     private function deleteImages($answer)
     {
+        $domain = env('ASSET_URL');
         $dom = new DOMDocument();
         libxml_use_internal_errors(true);
         $dom->loadHTML($answer, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -215,6 +236,7 @@ class FaqController extends Controller
 
         foreach ($images as $img) {
             $src = $img->getAttribute('src');
+            $src = str_replace($domain, '', $src);
             $image_path = public_path($src);
 
             if (file_exists($image_path)) {
