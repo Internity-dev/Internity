@@ -32,7 +32,7 @@ Route::middleware('guest')->group(function () {
     Route::resource('/faqs', FaqController::class)->only('index');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum', 'auth.check_status')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/me', [AuthController::class, 'me']);
