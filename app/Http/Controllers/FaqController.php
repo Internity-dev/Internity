@@ -167,7 +167,7 @@ class FaqController extends Controller
             // Jika gambar adalah base64 (gambar baru diupload)
             if (strpos($src, 'data:image') === 0) {
                 $data = base64_decode(explode(',', explode(';', $src)[1])[1]);
-                $image_name = '/uploads/' . time() . $key . '.png';
+                $image_name = 'uploads/' . time() . $key . '.png';
                 file_put_contents(public_path($image_name), $data);
 
                 $img->removeAttribute('src');
