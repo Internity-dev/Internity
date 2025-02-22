@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Appliance;
+use App\Exports\PresenceExport;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NewsController;
@@ -25,6 +25,7 @@ use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\PresenceStatusController;
 use App\Http\Controllers\ScorePredicateController;
 use App\Exports\StudentsExport;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\TeacherController;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
@@ -98,13 +99,16 @@ Route::middleware(['auth'])->group( function () {
 
     Route::resource('score-predicates', ScorePredicateController::class);
 
-    Route::resource('journals', JournalController::class);
+    Route::resource('journals', JournalController::class)->except('create', 'store');
     Route::put('journals/{id}/approve', [JournalController::class, 'approve'])->name('journals.approve');
-    Route::put('/journals/bulk-approve', [JournalController::class, 'bulkApprove'])->name('journals.bulkApprove');
+    Route::get('/bulk-journals', [JournalController::class, 'bulkApprove'])->name('journals.bulkApprove');
 
-    Route::resource('presences', PresenceController::class);
+    Route::resource('presences', PresenceController::class)->only('index', 'destroy');
     Route::put('presences/{id}/approve', [PresenceController::class, 'approve'])->name('presences.approve');
-    Route::put('/presences/bulk-approve', [PresenceController::class, 'bulkApprove'])->name('presences.bulkApprove');
+    Route::get('/bulk-presences', [PresenceController::class, 'bulkApprove'])->name('presences.bulkApprove');
+    Route::get('/presences/export', function (Request $request) {
+        return Excel::download(new PresenceExport($request), 'presences.xlsx');
+    })->name('presences.export');
 
     Route::resource('monitors', MonitorController::class);
 
@@ -122,4 +126,6 @@ Route::middleware(['auth'])->group( function () {
 
     Route::get('edit-profile', [UserController::class, 'editProfile'])->name('users.editProfile');
     Route::put('update-profile', [UserController::class, 'updateProfile'])->name('users.updateProfile');
+
+    Route::resource('faqs', FaqController::class);
 });

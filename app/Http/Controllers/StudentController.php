@@ -11,7 +11,7 @@ use App\Models\PresenceStatus;
 
 class StudentController extends Controller
 {
-    public function getData($search=null, $status=null, $school=null, $department=null, $sort=null)
+    public function getData($search=null, $status=null, $school=null, $department=null, $sort=null, $academicYear = null)
     {
         $isManager = auth()->user()->hasRole('manager');
         $isKaprog = auth()->user()->hasRole('kepala program');
@@ -21,6 +21,17 @@ class StudentController extends Controller
 
         $users = User::whereRelation('roles', 'name', 'student')
         ->with(['companies', 'internDates', 'schools', 'departments']); 
+            if ($academicYear) {
+                $yearRange = explode('-', $academicYear);
+                if (count($yearRange) == 2) {
+                    $startYear = $yearRange[0];
+                    $endYear = $yearRange[1];
+                    $users = $users->whereBetween('created_at', [
+                        Carbon::create($startYear, 1, 1)->startOfDay(),
+                        Carbon::create($startYear, 12, 31)->endOfDay(),
+                    ]);
+                }
+            }
             if ($search) {
                 $users = $users->where('name', 'like', '%' . $search . '%')
                     ->orWhere('email', 'like', '%' . $search . '%');
@@ -75,6 +86,7 @@ class StudentController extends Controller
                 'school' => $school,
                 'department' => $department,
                 'sort' => $sort,
+                'academicYear' => $academicYear,
             ];
         } else {
             $context = [
@@ -87,6 +99,7 @@ class StudentController extends Controller
                 'school' => $school,
                 'department' => $department,
                 'sort' => $sort,
+                'academicYear' => $academicYear,
             ];
         }
 
@@ -105,9 +118,22 @@ class StudentController extends Controller
         $school = $request->query('school');
         $department = $request->query('department');
         $sort = $request->query('sort');
+        $academicYear = $request->query('academic_year');
+
         $sort = $sort ? $sort : 'name';
 
-        $context = $this->getData($search, $status, $school, $department, $sort);
+        $currentDate = Carbon::now();
+        $currentYear = $currentDate->year;
+
+        if ($currentDate->month >= 5 && $currentDate->month <= 12) {
+            $defaultAcademicYear = $currentYear . '-' . ($currentYear + 1);
+        } else {
+            $defaultAcademicYear = ($currentYear - 1) . '-' . $currentYear;
+        }
+
+        $academicYear = $academicYear ? $academicYear : $defaultAcademicYear;
+
+        $context = $this->getData($search, $status, $school, $department, $sort, $academicYear);
 
         return $context['status']
         ? view('students.index', $context)
@@ -238,6 +264,14 @@ class StudentController extends Controller
                                 'finished' => $data['finished'] ?? 0,
                             ]
                         );
+
+                        $user->presences()->where('company_id', $companyId)
+                            ->where('date', '>', $endDate)
+                            ->delete();
+
+                        $user->journals()->where('company_id', $companyId)
+                            ->where('date', '>', $endDate)
+                            ->delete();
 
                         $presencePending = PresenceStatus::where('name', 'Pending')->first('id')->id;
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\JournalController;
 use App\Http\Controllers\Api\VacancyController;
 use App\Http\Controllers\Api\PresenceController;
 use App\Http\Controllers\Api\ApplianceController;
+use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PresenceStatusController;
 use App\Http\Controllers\Api\SavedVacancyController;
@@ -28,9 +29,10 @@ use App\Http\Controllers\Api\SavedVacancyController;
 Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
+    Route::resource('/faqs', FaqController::class)->only('index');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum', 'auth.check_status')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/me', [AuthController::class, 'me']);
@@ -62,7 +64,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::resource('journals', JournalController::class)->except(['create', 'edit']);
 
-    Route::post('export-journal/{id}', [ExportController::class, 'exportJournal']);
+    Route::post('export-journal/{id}', [ExportController::class, 'pdfSingleCompany']);
+    Route::post('export-journals', [ExportController::class, 'pdfMultipleCompany']);
 
     Route::get('/today-activities', [PresenceController::class, 'todayActivity']);
     Route::resource('presences', PresenceController::class)->except(['create', 'edit']);

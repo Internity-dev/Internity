@@ -121,6 +121,14 @@ class ApplianceController extends Controller
                 }
             }
 
+            $user->presences()->where('company_id', $id)
+            ->where('date', '>', $endDate)
+            ->delete();
+
+            $user->journals()->where('company_id', $id)
+            ->where('date', '>', $endDate)
+            ->delete();
+
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error while updating date',

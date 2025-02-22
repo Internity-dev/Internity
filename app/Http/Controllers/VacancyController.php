@@ -27,6 +27,7 @@ class VacancyController extends Controller
                 }
                 return $query->orderBy($sort, $sortType);
             })
+            ->orderByDesc('status')
             ->paginate(10);
 
         $vacancies->withPath('/vacancies')->withQueryString();
@@ -151,6 +152,7 @@ class VacancyController extends Controller
             'description' => 'nullable|string',
             'skills' => 'required|string',
             'slots' => 'required|integer',
+            'status' => 'boolean',
         ]);
 
         $vacancy = Vacancy::findOrFail($id);

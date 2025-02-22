@@ -153,6 +153,15 @@ class MenuSeeder extends Seeder
                 'parent_id' => null,
                 'permission_id' => Permission::where('name', 'role-list')->first()->id,
             ],
+            [
+                'name' => 'FAQ',
+                'icon' => 'mdi:help-circle',
+                'url' => 'faqs',
+                'status' => 1,
+                'order' => 110,
+                'parent_id' => null,
+                'permission_id' => Permission::where('name', 'faq-list')->first()->id,
+            ],
         ];
 
         foreach ($menus as $menu) {
