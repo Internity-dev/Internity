@@ -81,6 +81,7 @@ class UserController extends Controller
             'date_of_birth' => 'date',
             'bio' => 'max:255',
             'skills' => 'nullable',
+            'nis' => 'required|string|unique:users,nis,' . $user->id,
         ]);
 
         $user->update($request->all());

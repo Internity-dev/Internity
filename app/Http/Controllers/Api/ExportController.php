@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 // use ZipArchive;
+use Barryvdh\DomPDF\Facade\Pdf as DomPdfFacade;
 use mikehaertl\pdftk\Pdf;
 use Carbon\Carbon;
 
@@ -29,7 +30,7 @@ class ExportController extends Controller
         $companyId = $id;
         $company = $user->companies()->find($companyId);
         if (!$company) {
-            return response()->json(['error' => 'Company not found!'], 404);
+            return response()->json(['message' => 'Company not found!'], 404);
         }
 
         $internDate = $user->internDates()->where('company_id', $companyId)->first();
@@ -46,7 +47,7 @@ class ExportController extends Controller
             ->values();
 
         if ($presences->isEmpty()) {
-            return response()->json(['error' => 'No presences found!'], 404);
+            return response()->json(['message' => 'No presences found!'], 404);
         }
 
         $journals = $user->journals()
@@ -58,7 +59,7 @@ class ExportController extends Controller
             ->values();
         
         if ($journals->isEmpty()) {
-            return response()->json(['error' => 'No journals found!'], 404);
+            return response()->json(['message' => 'No journals found!'], 404);
         }
 
         $parentAddress =  $request->input('parent_address') ?? $user->address;
@@ -70,8 +71,8 @@ class ExportController extends Controller
         $formFields = [
            'namasiswa' => $user->name,
             'kelas' => $courseLevel,
-            'nis' => $request->input('nis'),
-            'nis_nisn' => $request->input('nis') . '/' . $request->input('nisn'),
+            'nis' => $user->nis,
+            'nis_nisn' => $user->nis . '/' . $request->input('nisn'),
             'gol_darah' => $request->input('blood_type'),
             'alamat_siswa' => $user->address,
             'jurusan' => $user->departments->first()?->description,
@@ -115,7 +116,7 @@ class ExportController extends Controller
         }
 
         if (!file_exists($templatePath)) {
-            return response()->json(['error' => 'PDF template not found!'], 404);
+            return response()->json(['message' => 'PDF template not found!'], 404);
         }
 
         $fileName = $user->id . time() . '.pdf';
@@ -125,7 +126,7 @@ class ExportController extends Controller
         $result = $pdf->fillForm($formFields)->flatten()->saveAs($outputPath);
         if (!$result) {
             $error = $pdf->getError();
-            return response()->json(['error' => 'Failed to generate PDF: ' . $error], 500);
+            return response()->json(['message' => 'Failed to generate PDF: ' . $error], 500);
         }
 
         return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
@@ -151,14 +152,14 @@ class ExportController extends Controller
         $companies = $user->companies;
     
         if ($companies->isEmpty()) {
-            return response()->json(['error' => 'No companies associated with the user!'], 404);
+            return response()->json(['message' => 'No companies associated with the user!'], 404);
         }
     
         $formFields = [
             'namasiswa' => $user->name,
             'kelas' => $courseLevel,
-            'nis' => $request->input('nis'),
-            'nis_nisn' => $request->input('nis') . '/' . $request->input('nisn'),
+            'nis' => $user->nis,
+            'nis_nisn' => $user->nis . '/' . $request->input('nisn'),
             'gol_darah' => $request->input('blood_type'),
             'alamat_siswa' => $user->address,
             'jurusan' => $user->departments->first()?->description,
@@ -221,7 +222,7 @@ class ExportController extends Controller
     
         $templatePath = public_path('template-pdf/template_2-company.pdf');
         if (!file_exists($templatePath)) {
-            return response()->json(['error' => 'PDF template not found!'], 404);
+            return response()->json(['message' => 'PDF template not found!'], 404);
         }
     
         $fileName = $user->id . time() . '.pdf';
@@ -231,10 +232,108 @@ class ExportController extends Controller
         $result = $pdf->fillForm($formFields)->flatten()->saveAs($outputPath);
         if (!$result) {
             $error = $pdf->getError();
-            return response()->json(['error' => 'Failed to generate PDF: ' . $error], 500);
+            return response()->json(['message' => 'Failed to generate PDF: ' . $error], 500);
         }
     
         return response()->download($outputPath, $fileName)->deleteFileAfterSend(true);
     }
-    
+    public function exportCertificate(Request $request, $id)
+    {
+        $user = auth()->user();
+        $company = $user->companies()->find($id);
+
+        if (!$company) {
+            return response()->json(['message' => 'Company not found!'], 404);
+        }
+
+        $internDate = $user->internDates()->where('company_id', $id)->first();
+        $scores = $user->scores()->where('company_id', $id)->get();
+
+        if ($scores->isEmpty()) {
+            return response()->json(['message' => 'Scores not found! Call the mentor to add scores first!'], 400);
+        }
+
+        $averageScore = $scores->avg('score') ?? 0;
+        // $technicalScore = $scores->where('type', 'teknis')->avg('score') ?? 0;
+        // $nonTechnicalScore = $scores->where('type', 'non-teknis')->avg('score') ?? 0;
+
+        $formattedDateOfBirth = $user->date_of_birth
+            ? Carbon::parse($user->date_of_birth)->translatedFormat('j F Y')
+            : 'N/A';
+
+        $formFields = [
+            'nama_siswa' => $user->name,
+            'ttl' => $formattedDateOfBirth,
+            'nis' => $user->nis,
+            'program_studi' => $user->departments->first()?->study_program,
+            'jurusan' => $user->departments->first()?->description,
+            'instansi_nama' => $company->name,
+            'tgl_mulai' => $internDate ? Carbon::parse($internDate->start_date)->translatedFormat('j F Y') : 'N/A',
+            'tgl_selesai' => $internDate ? Carbon::parse($internDate->end_date)->translatedFormat('j F Y') : 'N/A',
+            'tgl_export' => Carbon::now()->translatedFormat('j F Y'),
+            'instansi_direktur' => $company->contact_person,
+            'nilai_all' => number_format($averageScore, 2),
+        ];
+
+        $templatePath = public_path('template-pdf/template_certificate_infront.pdf');
+
+        if (!file_exists($templatePath)) {
+            return response()->json(['message' => 'PDF template not found!'], 404);
+        }
+
+        $fileName = $user->id . '_certificate_' . time() . '.pdf';
+        $outputPathFront = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'front_' . $fileName;
+        $pdfFront = new Pdf($templatePath);
+        $resultFront = $pdfFront->fillForm($formFields)->flatten()->saveAs($outputPathFront);
+
+        if (!$resultFront) {
+            return response()->json(['message' => 'Failed to generate front page PDF: ' . $pdfFront->getError()], 500);
+        }
+
+        // Generate halaman belakang (back) dengan DomPDF
+        $technicalScores = $scores->where('type', 'teknis');
+        $nonTechnicalScores = $scores->where('type', 'non-teknis');
+
+        foreach ($technicalScores as $score) {
+            $score->letter = $this->convertScoreToLetter($score->score);
+        }
+        foreach ($nonTechnicalScores as $score) {
+            $score->letter = $this->convertScoreToLetter($score->score);
+        }
+
+        $pdfBack = DomPdfFacade::loadView('pdf.certificate_back', [
+            'technicalScores' => $technicalScores,
+            'nonTechnicalScores' => $nonTechnicalScores,
+            'avgScore' => number_format($averageScore, 2),
+        ])->setPaper('a4', 'landscape');
+
+        $outputPathBack = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'back_' . $fileName;
+        $pdfBack->save($outputPathBack);
+
+        // Gabungkan PDF depan & belakang
+        $mergedPdfPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+        $pdf = new Pdf();
+        $mergeResult = $pdf->addFile($outputPathFront)
+            ->addFile($outputPathBack)
+            ->saveAs($mergedPdfPath);
+
+        if (!$mergeResult) {
+            return response()->json(['message' => 'Failed to merge PDF files: ' . $pdf->getError()], 500);
+        }
+
+        return response()->download($mergedPdfPath, $fileName)->deleteFileAfterSend(true);
+    }
+
+    private function convertScoreToLetter($score)
+    {
+        if ($score >= 90) {
+            return 'Sangat Baik';
+        } elseif ($score >= 75) {
+            return 'Baik';
+        } elseif ($score >= 60) {
+            return 'Cukup';
+        } else {
+            return 'Kurang';
+        }
+    }
 }

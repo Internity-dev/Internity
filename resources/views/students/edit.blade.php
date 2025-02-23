@@ -1,46 +1,50 @@
 @extends('layouts.dashboard')
 
 @section('dashboard-content')
-    <x-form.form formTitle="Edit Siswa" formMethod="POST" spoofMethod="PUT" formAction="{{ route('students.update', ['id' => encrypt($student->id)]) }}">
-        @error(['name', 'course_id', 'skills', 'company', 'start_date', 'end_date', 'extend'])
-            <div class="alert alert-dark text-white help-block">{{ $message }}</div>
-        @enderror
-        <x-slot:formBody>
-            @if (auth()->user()->can('user-edit'))
-                <x-form.input-base label="Nama" id="input-name" type="text" name="name" required
-                    value="{{ $student->name }}" />
-                <x-form.select label="Kelas" id="input-course" required name="course_id">
-                    <option selected hidden>Pilih</option>
-                    <x-slot:options>
-                        @foreach ($courses as $key => $value)
-                            <option value="{{ $key }}"
-                                {{ $student->courses()->first()?->id == $key ? 'selected' : '' }}>
-                                {{ $value }}</option>
-                        @endforeach
-                    </x-slot:options>
-                </x-form.select>
-                <x-form.input-base label="Keahlian (pisahkan dengan koma ',')" id="input-skills" type="text"
-                    name="skills" value="{{ $student->skills }}"
-                    placeholder="HTML, CSS, JavaScript, PHP, Laravel, MySQL, Bootstrap" />
-            @else
-                <x-form.input-base readonly label="Nama" id="input-name" type="text" name="name" required
-                    value="{{ $student->name }}" />
-                <x-form.select readonly="true" label="Kelas" id="input-course" required name="course_id"
-                    style="pointer-events: none;">
-                    <option selected hidden>Pilih</option>
-                    <x-slot:options>
-                        @foreach ($courses as $key => $value)
-                            <option value="{{ $key }}"
-                                {{ $student->courses()->first()?->id == $key ? 'selected' : 'disabled' }}>
-                                {{ $value }}</option>
-                        @endforeach
-                    </x-slot:options>
-                </x-form.select>
-                <x-form.input-base readonly label="Keahlian (pisahkan dengan koma ',')" id="input-skills" type="text"
-                    name="skills" value="{{ $student->skills }}"
-                    placeholder="HTML, CSS, JavaScript, PHP, Laravel, MySQL, Bootstrap" />
-            @endif
-            <div id="company-section">
+<x-form.form formTitle="Edit Siswa" formMethod="POST" spoofMethod="PUT" formAction="{{ route('students.update', ['id' => encrypt($student->id)]) }}">
+    @error(['name', 'course_id', 'skills', 'company', 'start_date', 'end_date', 'extend'])
+    <div class="alert alert-dark text-white help-block">{{ $message }}</div>
+    @enderror
+    <x-slot:formBody>
+        @if (auth()->user()->can('user-edit'))
+        <x-form.input-base label="Nama" id="input-name" type="text" name="name" required
+            value="{{ $student->name }}" />
+        <x-form.input-base label="NIS" id="input-nis" type="text" name="nis"
+            value="{{ $student->nis }}" />
+        <x-form.select label="Kelas" id="input-course" required name="course_id">
+            <option selected hidden>Pilih</option>
+            <x-slot:options>
+                @foreach ($courses as $key => $value)
+                <option value="{{ $key }}"
+                    {{ $student->courses()->first()?->id == $key ? 'selected' : '' }}>
+                    {{ $value }}
+                </option>
+                @endforeach
+            </x-slot:options>
+        </x-form.select>
+        <x-form.input-base label="Keahlian (pisahkan dengan koma ',')" id="input-skills" type="text"
+            name="skills" value="{{ $student->skills }}"
+            placeholder="HTML, CSS, JavaScript, PHP, Laravel, MySQL, Bootstrap" />
+        @else
+        <x-form.input-base readonly label="Nama" id="input-name" type="text" name="name" required
+            value="{{ $student->name }}" />
+        <x-form.select readonly="true" label="Kelas" id="input-course" required name="course_id"
+            style="pointer-events: none;">
+            <option selected hidden>Pilih</option>
+            <x-slot:options>
+                @foreach ($courses as $key => $value)
+                <option value="{{ $key }}"
+                    {{ $student->courses()->first()?->id == $key ? 'selected' : 'disabled' }}>
+                    {{ $value }}
+                </option>
+                @endforeach
+            </x-slot:options>
+        </x-form.select>
+        <x-form.input-base readonly label="Keahlian (pisahkan dengan koma ',')" id="input-skills" type="text"
+            name="skills" value="{{ $student->skills }}"
+            placeholder="HTML, CSS, JavaScript, PHP, Laravel, MySQL, Bootstrap" />
+        @endif
+        <div id="company-section">
             @foreach ($companiesData as $company)
             <div class="company-group mb-3 border p-3">
                 <x-form.input-base disabled label="IDUKA" id="input-company-{{ $company['id'] }}" type="text" name="companies[{{ $company['id'] }}][name]" value="{{ $company['name'] }}" />
@@ -66,6 +70,6 @@
             </div>
             @endforeach
         </div>
-        </x-slot:formBody>
-    </x-form.form>
+    </x-slot:formBody>
+</x-form.form>
 @endsection

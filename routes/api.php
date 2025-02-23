@@ -66,6 +66,7 @@ Route::middleware('auth:sanctum', 'auth.check_status')->group(function () {
 
     Route::post('export-journal/{id}', [ExportController::class, 'pdfSingleCompany']);
     Route::post('export-journals', [ExportController::class, 'pdfMultipleCompany']);
+    Route::post('export-certificate/{id}', [ExportController::class, 'exportCertificate']);
 
     Route::get('/today-activities', [PresenceController::class, 'todayActivity']);
     Route::resource('presences', PresenceController::class)->except(['create', 'edit']);
