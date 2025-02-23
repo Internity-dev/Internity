@@ -138,7 +138,8 @@ class DepartmentController extends Controller
             'name' => 'required|max:255',
             'description' => 'nullable|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'school_id' => 'required|exists:schools,id'
+            'school_id' => 'required|exists:schools,id',
+            'study_program' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -146,6 +147,7 @@ class DepartmentController extends Controller
                     'name' => $request->name,
                     'description' => $request->description,
                     'school_id' => $request->school_id,
+                    'study_program' => $request->study_program
                 ]);
 
                 if ($request->hasFile('logo')) {
@@ -213,6 +215,7 @@ class DepartmentController extends Controller
             'name' => 'required|max:255',
             'description' => 'nullable|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'study_program' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -220,6 +223,7 @@ class DepartmentController extends Controller
             $department->update([
                 'name' => $request->name,
                 'description' => $request->description,
+                'study_program' => $request->study_program
             ]);
 
             if ($request->hasFile('logo')) {

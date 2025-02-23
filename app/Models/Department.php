@@ -15,6 +15,7 @@ class Department extends Model
         'logo',
         'status',
         'school_id',
+        'study_program',
     ];
 
     public function school()
