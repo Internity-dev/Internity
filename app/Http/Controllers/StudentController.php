@@ -216,6 +216,7 @@ class StudentController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'nis' => 'required|string|unique:users,nis,' . $id,
             'skills' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
             'companies.*.start_date' => 'nullable|date',
@@ -232,6 +233,7 @@ class StudentController extends Controller
             $user->update([
                 'name' => $request->name,
                 'skills' => $request->skills,
+                'nis' => $request->nis
             ]);
             $user->courses()->sync($request->course_id);
 
