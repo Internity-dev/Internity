@@ -77,6 +77,12 @@ class ApplianceController extends Controller
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
 
+        if ($startDate->greaterThanOrEqualTo($endDate)) {
+            return response()->json([
+                    'message' => 'The start date cannot be later than or equal to the end date.',
+                ], 400);
+        }
+
         // Check if the start and end dates overlap with any other company's internship dates
         $overlapCheck = $user->internDates()->where('company_id', '!=', $id)
             ->where(function ($query) use ($startDate, $endDate) {
