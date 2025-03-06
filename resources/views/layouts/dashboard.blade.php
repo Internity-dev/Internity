@@ -15,7 +15,7 @@
     {{-- dashboard content --}}
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <div class="container-fluid py-4">
-            <x-navbar :user="$user" />
+            <x-navbar :user="$authUser" />
             @yield('dashboard-content')
         </div>
     </main>

@@ -8,7 +8,7 @@
 
             <!-- Title (Mobile: di bawah, Desktop: tetap di atas) -->
             <nav aria-label="breadcrumb" class="order-2 order-lg-1 text-center text-lg-start w-100 mt-2 mt-lg-0">
-                <h6 class="font-weight-bolder mb-0 text-uppercase">@yield('title')</h6>
+                <h6 class="font-weight-bolder mb-3 text-uppercase">@yield('title')</h6>
             </nav>
 
             <!-- User Avatar (Di kanan) -->
@@ -29,9 +29,9 @@
                     <li class="nav-item dropdown ms-auto">
                         <a href="javascript:;" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center"
                             id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ $user->avatar_url }}" class="avatar avatar-sm me-2 rounded-circle" alt="user"
+                            <img src="{{ $authUser->avatar_url }}" class="avatar avatar-sm me-2 rounded-circle" alt="user"
                                 style="width: 30px; height: 30px;">
-                            <span class="d-none d-lg-inline">{{ $user->name }}</span>
+                            <span class="d-none d-lg-inline">{{ $authUser->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4 w-100"
                             aria-labelledby="dropdownMenuButton">

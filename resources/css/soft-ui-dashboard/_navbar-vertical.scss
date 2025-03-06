@@ -252,7 +252,46 @@
     }
   }
 }
-// Media fixes for iPhone 5 like resolutions
+
+// responsive sidenav start
+.g-sidenav-show {
+  &.g-sidenav-pinned {
+    .sidenav {
+      transform: translateX(0);
+    }
+  }
+
+  .sidenav {
+    &.fixed-start {
+      transform: translateX(0);
+    }
+
+    transition: transform 0.3s ease;
+  }
+
+  .sidenav-toggler-inner {
+    .sidenav-toggler-line {
+      background-color: #333;
+    }
+  }
+
+  .g-sidenav-show.g-sidenav-pinned {
+    .sidenav {
+      transform: translateX(0);
+    }
+  }
+}
+@include media-breakpoint-down(sm) {
+  .g-sidenav-show {
+    &.g-sidenav-pinned {
+      .sidenav {
+        transform: translateX(0);
+      }
+    }
+  }
+}
+// responsive sidenav end
+
 @include media-breakpoint-down(xl) {
   .g-sidenav-show {
     &.rtl {
