@@ -25,12 +25,23 @@
 </head>
 
 <body class="antialiased g-sidenav-show">
-    <div class="content">
-        @yield('content')
-    </div>
+    @yield('content')
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#iconNavbarSidenav').click(function() {
+                $('body').toggleClass('g-sidenav-pinned');
+            });
+
+            $(document).click(function(event) {
+                if (!$(event.target).closest('.sidenav, #iconNavbarSidenav').length) {
+                    $('body').removeClass('g-sidenav-pinned');
+                }
+            });
+        });
+    </script>
     @stack('scripts')
 </body>
 

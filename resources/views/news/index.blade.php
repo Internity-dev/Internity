@@ -1,5 +1,7 @@
 @extends('layouts.dashboard')
 
+@section('title', $category == 'school' ? 'Berita & Artikel ' . $selectedSchool->name : 'Berita & Artikel ' . $selectedDepartment->name)
+
 @section('dashboard-content')
     <x-table routeCreate="{!! route('news.create', ['category' => $category, 'school' => encrypt($selectedSchool->id)]) !!}"
         pageName="Berita & Artikel {{ $category == 'school' ? $selectedSchool->name : $selectedDepartment->name }}"

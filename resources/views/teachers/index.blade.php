@@ -4,6 +4,8 @@
 
 @extends('layouts.dashboard')
 
+@section('title', 'Data Guru')
+
 @section('dashboard-content')
     <x-table pageName="Data Guru" :pagination="$teachers" :tableData="$teachers">
 

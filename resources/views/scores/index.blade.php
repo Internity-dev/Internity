@@ -3,6 +3,8 @@
 @endphp --}}
 @extends('layouts.dashboard')
 
+@section('title', 'Penilaian PKL ' . $userName)
+
 @section('dashboard-content')
     <x-table routeCreate="{!! route('scores.create', ['user'=>request()->query('user'), 'company'=>request()->query('company')]) !!}" permissionCreate="score-create" pageName="Penilaian PKL {{ $userName }}" :pagination="$scores" :tableData="$scores">
 

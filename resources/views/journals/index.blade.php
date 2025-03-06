@@ -3,6 +3,8 @@
 @endphp --}}
 @extends('layouts.dashboard')
 
+@section('title', 'Jurnal PKL ' . $userName)
+
 @section('dashboard-content')
     <x-table pageName="Jurnal PKL {{ $userName }}" :pagination="$journals" :tableData="$journals">
 

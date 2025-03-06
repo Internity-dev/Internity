@@ -4,6 +4,8 @@
 
 @extends('layouts.dashboard')
 
+@section('title', 'Lowongan')
+
 @section('dashboard-content')
     <x-table routeCreate="{{ route('vacancies.create', ['company' => encrypt($company)]) }}" pageName="Lowongan"
         permissionCreate="vacancy-create" :pagination="$vacancies" :tableData="$vacancies">

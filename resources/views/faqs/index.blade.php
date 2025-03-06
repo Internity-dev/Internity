@@ -1,5 +1,7 @@
 @extends('layouts.dashboard')
 
+@section('title', 'FAQs')
+
 @section('dashboard-content')
 <x-table pageName="FAQs" routeCreate="{{ route('faqs.create') }}" :pagination="$faqs" :tableData="$faqs">
 

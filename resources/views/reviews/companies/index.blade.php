@@ -4,6 +4,8 @@
 
 @extends('layouts.dashboard')
 
+@section('title', 'Ulasan ' . $companyName)
+
 @section('dashboard-content')
     <x-table  pageName="Ulasan {{ $companyName }}"
         permissionCreate="review-create" :pagination="$reviews" :tableData="$reviews">
