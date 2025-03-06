@@ -1,5 +1,7 @@
 @extends('layouts.dashboard')
 
+@section('title', 'Master Status Kehadiran')
+
 @section('dashboard-content')
     <x-table routeCreate="{{ route('presence-statuses.create', ['school'=>encrypt(1)]) }}" permissionCreate="presence-status-create" pageName="Master Status Kehadiran" :pagination="$presenceStatuses"
         :tableData="$presenceStatuses">

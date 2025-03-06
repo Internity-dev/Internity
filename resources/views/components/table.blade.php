@@ -14,7 +14,7 @@ if ($currentDate->month >= 6 && $currentDate->month <= 12) {
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header">
-                <h6 class="text-uppercase">{{ $pageName }}</h6>
+                <!-- <h6 class="text-uppercase">{{ $pageName }}</h6> -->
 
                 {{-- Table Function --}}
                 <div

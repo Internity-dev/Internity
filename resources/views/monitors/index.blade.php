@@ -3,6 +3,8 @@
 @endphp --}}
 @extends('layouts.dashboard')
 
+@section('title', 'Data Monitoring ' . $userName)
+
 @section('dashboard-content')
     <x-table routeCreate="{!! route('monitors.create', ['user'=>request()->query('user'), 'company'=>request()->query('company')]) !!}" permissionCreate="monitor-create" pageName="Data Monitoring {{ $userName }}" :pagination="$monitors" :tableData="$monitors">
 

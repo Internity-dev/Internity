@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('*', function ($view) {
             if (auth()->check()) {
+                $user = auth()->user();
                 $userPermissions = auth()->user()->getAllPermissions()->pluck('id')->toArray();
                 $menus = Menu::with('children')
                     ->where('parent_id', null)
@@ -43,7 +44,10 @@ class AppServiceProvider extends ServiceProvider
                     ->orderBy('order')
                     ->get();
 
-                $view->with('menus', $menus);
+                $view->with([
+                    'user' => $user,
+                    'menus' => $menus
+                ]);
             }
         });
 

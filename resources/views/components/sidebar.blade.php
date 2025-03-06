@@ -1,9 +1,3 @@
-{{-- @php
-    dd($menus);
-@endphp --}}
-
-
-<!-- Sidenav Start -->
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-white"
     id="sidenav-main">
     <!-- Sidenav Header Start -->

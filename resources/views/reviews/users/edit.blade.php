@@ -1,5 +1,7 @@
 @extends('layouts.dashboard')
 
+@section('title', 'Ulasan ' . $user->name)
+
 @section('dashboard-content')
     <x-form.form formTitle="Kuisioner {{ $user->name }}" formMethod="POST" spoofMethod="PUT" formAction="{{ route('reviews.users.update') }}" roleEdit="admin super-admin mentor manager">
         <x-slot:formBody>
