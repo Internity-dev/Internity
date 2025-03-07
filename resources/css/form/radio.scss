@@ -1,6 +1,42 @@
 .input-radio {
+    margin-bottom: 1.5rem;
+
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
     .form-input {
         display: flex;
-        column-gap: 1em;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-check-input {
+        margin: 0;
+    }
+
+    .form-check-label {
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .input-radio {
+        .form-input {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-check {
+            width: 100%;
+        }
     }
 }

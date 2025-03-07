@@ -16,9 +16,9 @@
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-15">
                 Role
             </th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-55">
+            <!-- <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-55">
                 Permission
-            </th>
+            </th> -->
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 w-10">
                 Status
             </th>
@@ -41,7 +41,7 @@
                         </form> --}}
                     </td>
                     <td class="text-sm text-center">{{ $data->name }}</td>
-                    <td class="text-sm">{{ $data->permissions->implode('name', ', ') }}</td>
+                    <!-- <td class="text-sm">{{ $data->permissions->implode('name', ', ') }}</td> -->
                     <td class="text-center">
                         <p class="badge badge-sm {{ $data->status ? 'bg-gradient-success' : 'bg-gradient-danger' }}">{{ $data->status ? 'Aktif' : 'Inaktif' }}</p>
                     </td>
