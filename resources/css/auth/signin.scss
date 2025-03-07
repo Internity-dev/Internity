@@ -25,31 +25,42 @@
             #00f0c5 100%
         );
         height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
 
         h1 {
             font-weight: 700;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
     }
 
     .side-left {
         background-color: white;
         height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
 
         img {
-            margin-bottom: 50px;
-            width: 200px;
+            margin-bottom: 30px;
+            width: 150px;
         }
 
         h1 {
             color: #0161a7;
             font-weight: 700;
+            font-size: 2rem;
         }
 
         p {
             color: #2697d8;
             font-weight: 600;
-            font-size: large;
+            font-size: 1.2rem;
         }
 
         span {
@@ -63,7 +74,13 @@
         position: relative;
         font-weight: 500;
         font-size: large;
-        width: 450px;
+        width: 100%;
+        max-width: 450px;
+        margin-bottom: 20px;
+    }
+
+    #show {
+        display: none;
     }
 
     .input {
@@ -73,18 +90,7 @@
         border-bottom: 2px solid white;
         outline: none;
         color: white;
-    }
-
-    #email {
-        margin-bottom: 50px;
-    }
-
-    #password {
-        margin-bottom: 30px;
-    }
-
-    #show {
-        display: none;
+        width: 100%;
     }
 
     .submit {
@@ -97,6 +103,8 @@
         margin: 20px 0;
         text-align: center;
         font-weight: 700;
+        width: 100%;
+        cursor: pointer;
     }
 
     .submit:hover {
@@ -112,7 +120,6 @@
         align-items: center;
 
         a {
-            float: right;
             color: white;
             text-decoration: none;
         }
@@ -150,79 +157,71 @@
     }
 }
 
-// @media screen and (max-width: 450px) {
-//     .side-left {
-//         h1 {
-//             font-size: 26px;
-//         }
+@media screen and (max-width: 767px) {
+    .side-left {
+        height: 40vh;
 
-//         p {
-//             font-size: 13px;
-//         }
-//     }
-// }
+        img {
+            margin-bottom: 20px;
+            width: 120px;
+        }
 
-// @media screen and (max-width: 550px) {
-//     .side-left {
-//         height: 30vh;
-//         margin-top: 10px;
+        h1 {
+            font-size: 1.8rem;
+        }
 
-//         img {
-//             margin-bottom: 10px;
-//             width: 100px;
-//         }
+        p {
+            font-size: 1rem;
+        }
+    }
 
-//         h1 {
-//             font-size: 28px;
-//         }
+    .side-right {
+        height: 60vh;
+        padding: 20px;
 
-//         p {
-//             font-size: 14px;
-//         }
-//     }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+    }
 
-//     .side-right {
-//         height: 70vh;
+    .input-field {
+        max-width: 350px;
+        font-size: medium;
+    }
 
-//         h1 {
-//             margin-bottom: 40px;
-//         }
-//     }
+    .submit {
+        margin: 15px 0;
+    }
+}
 
-//     .input-field {
-//         width: 350px;
-//         font-size: medium;
-//     }
+@media screen and (max-width: 450px) {
+    .side-left {
+        height: 30vh;
 
-//     #login-page #email {
-//         margin-bottom: 30px;
-//     }
+        img {
+            margin-bottom: 10px;
+            width: 100px;
+        }
 
-//     #login-page #password {
-//         margin-bottom: 15px;
-//     }
-// }
+        h1 {
+            font-size: 1.5rem;
+        }
 
-// @media screen and (max-width: 767px){
-//     .side-left {
-//         height: 30vh;
+        p {
+            font-size: 0.9rem;
+        }
+    }
 
-//         img {
-//             margin-bottom: 10px;
-//             width: 100px;
-//         }
-//     }
+    .side-right {
+        height: 70vh;
 
-//     .side-right {
-//         height: 70vh;
+        h1 {
+            font-size: 1.5rem;
+        }
+    }
 
-//         h1 {
-//             margin-bottom: 40px;
-//         }
-//     }
-
-//     .input-field {
-//         width: 500px;
-//     }
-
-// }
+    .input-field {
+        max-width: 300px;
+    }
+}

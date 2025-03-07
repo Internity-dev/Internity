@@ -75,7 +75,8 @@
 
           .navbar-collapse {
             display: block;
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
             height: $navbar-vertical-inner;
           }
           // Container

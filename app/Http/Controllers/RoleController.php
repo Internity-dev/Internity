@@ -99,7 +99,17 @@ class RoleController extends Controller
     public function create()
     {
         $permissions = Permission::all();
-        return view('roles.create', compact('permissions'));
+        $groupedPermissions = [];
+
+        foreach ($permissions as $permission) {
+            $parts = explode('-', $permission->name);
+
+            if (count($parts)) {
+                $group = $parts[0];
+                $groupedPermissions[$group][] = $permission;
+            }
+        }
+        return view('roles.create', compact('groupedPermissions'));
     }
 
     /**
@@ -156,8 +166,19 @@ class RoleController extends Controller
         $role = Role::find($id);
         $permissions = Permission::all();
 
+        $groupedPermissions = [];
+
+        foreach ($permissions as $permission) {
+            $parts = explode('-', $permission->name);
+
+            if (count($parts)) {
+                $group = $parts[0];
+                $groupedPermissions[$group][] = $permission;
+            }
+        }
+
         return $role
-        ? view('roles.edit', compact('role', 'permissions'))
+        ? view('roles.edit', compact('role', 'groupedPermissions'))
         : redirect()->route('roles.index')->with('error', 'Role tidak ditemukan');
     }
 

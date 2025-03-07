@@ -21,3 +21,17 @@ form.form-data {
         }
     }
 }
+
+
+@media screen and (max-width: 767px) {
+    form.form-data {
+        width: 100%;
+        padding: 2em 1em;
+        margin: 1em auto 0;
+
+        .footer {
+            flex-direction: column;
+            row-gap: 3px;
+        }
+    }
+}

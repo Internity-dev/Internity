@@ -1,6 +1,6 @@
-<div class="alert {{ $type }} alert-dismissible fade show custom-alert" role="alert">
+<div class="alert {{ $type }} alert-dismissible fade show custom-alert text-white" role="alert">
     {{ $message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
 </div>
 
 <style>

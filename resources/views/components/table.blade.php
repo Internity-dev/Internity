@@ -77,7 +77,7 @@ if ($currentDate->month >= 6 && $currentDate->month <= 12) {
                         {{-- Filter Start --}}
                         @if (!empty($filter))
                         <div class="mb-2 mb-sm-0">
-                            {{ $dropdown }} tes
+                            {{ $dropdown }}
                         </div>
                         @endif
                         {{-- Filter end --}}
