@@ -248,6 +248,7 @@ class ExportController extends Controller
 
         $internDate = $user->internDates()->where('company_id', $id)->first();
         $scores = $user->scores()->where('company_id', $id)->get();
+        $noSertif = $request->input('no_sertif');
 
         if ($scores->isEmpty()) {
             return response()->json(['message' => 'Scores not found! Call the mentor to add scores first!'], 400);
@@ -262,6 +263,7 @@ class ExportController extends Controller
             : 'N/A';
 
         $formFields = [
+            'no_sertif' => 'No. ' . $noSertif,
             'nama_siswa' => $user->name,
             'ttl' => $formattedDateOfBirth,
             'nis' => $user->nis,
