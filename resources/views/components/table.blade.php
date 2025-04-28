@@ -47,6 +47,27 @@ if ($currentDate->month >= 6 && $currentDate->month <= 12) {
                             APPROVE ALL
                         </a>
                         @endif
+
+
+                        @if ($routeCreate && request()->is('scores'))
+                        @php
+                        $certificate = \App\Models\Certificate::where('user_id', decrypt(request()->query('user')))
+                        ->where('company_id', decrypt(request()->query('company')))
+                        ->first();
+                        $hasCertificate = !empty($certificate);
+                        @endphp
+                        @if ($hasCertificate)
+                        <a href="{{ route('certificate.download', ['id' => $certificate->id]) }}"
+                            class="btn bg-gradient-success mb-2 mb-sm-0 me-2">
+                            Unduh Sertifikat
+                        </a>
+                        @else
+                        <button class="btn bg-gradient-info mb-2 mb-sm-0 me-2" data-bs-toggle="modal"
+                            data-bs-target="#modalInputSertifikat">
+                            Export Sertifikat
+                        </button>
+                        @endif
+                        @endif
                     </div>
 
                     <div class="d-flex flex-wrap align-items-center">

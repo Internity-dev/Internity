@@ -25,6 +25,7 @@ use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\PresenceStatusController;
 use App\Http\Controllers\ScorePredicateController;
 use App\Exports\StudentsExport;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\TeacherController;
 use Maatwebsite\Excel\Facades\Excel;
@@ -123,6 +124,8 @@ Route::middleware(['auth'])->group( function () {
     Route::put('reviews/users', [ReviewController::class, 'userUpdate'])->name('reviews.users.update');
 
     Route::resource('scores', ScoreController::class);
+    Route::post('scores/export-certificate', [CertificateController::class, 'exportCertificate'])->name('export-certificate');
+    Route::get('scores/download-certificate/{id}', [CertificateController::class, 'downloadCertificate'])->name('certificate.download');
 
     Route::get('edit-profile', [UserController::class, 'editProfile'])->name('users.editProfile');
     Route::put('update-profile', [UserController::class, 'updateProfile'])->name('users.updateProfile');
